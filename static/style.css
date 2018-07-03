@@ -1,0 +1,18 @@
+.slider { 
+    width: 250px;
+    display: inline-block;
+    padding: 0px 15px;
+}
+
+.dropdown { 
+    width: 250px;
+    display: inline-block;
+    padding: 0px 15px;
+}
+
+.plot { 
+   // Doesn't seem to work
+   // width: 500px;
+   // display: inline-block;
+   padding: 0px 15px;
+}
