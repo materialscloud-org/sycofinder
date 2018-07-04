@@ -18,8 +18,15 @@ import os
 
 # variables
 variables = collections.OrderedDict([
-    ('temperature', dict(label='Temperature', range=[0.0,1000.0], weight=1.0, unit='K')),
-    ('temperature2', dict(label='Temperature', range=[0.0,1000.0], weight=2.0, unit='K')),
+    ('h2o', dict(label='Water', range=[1.0, 6.0], weight=1.0, unit='ml')),
+    ('dmf', dict(label='DMF', range=[1.0, 6.0], weight=1.0, unit='ml')),
+    ('etoh', dict(label='Ethanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
+    ('meoh', dict(label='Methanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
+    ('iproh', dict(label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
+    ('r_ratio', dict(label='Reactants ratio', range=[0.8,1.8], weight=1.0, unit=None)),
+    ('temperature', dict(label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
+    ('power', dict(label='Microwave Power', range=[150.0,250.0], weight=2.0, unit='W')),
+    ('time', dict(label='Reaction time', range=[2.0,60.0], weight=2.0, unit='min')),
 ])
 labels = variables.keys()
 nq = len(variables)
@@ -29,7 +36,10 @@ weight_range = [0, 10]
 def get_controls(id, desc, range, default=1.0):
     """Get controls for one variable.
 
-    This includes specifying the description, range and weight.
+    This includes
+     * the description
+     * range 
+     * weight
     """
     range_low = dcc.Input(id=id+"_low", type='number', value=range[0])
     range_high = dcc.Input(id=id+"_high", type='number', value=range[1])
@@ -38,7 +48,10 @@ def get_controls(id, desc, range, default=1.0):
 
 controls_dict = collections.OrderedDict()
 for k,v in variables.iteritems():
-    desc = "{} [{}]: ".format(v['label'], v['unit'])
+    if v['unit'] is None:
+        desc = v['label']
+    else:
+        desc = "{} [{}]: ".format(v['label'], v['unit'])
     if not 'default' in v.keys():
         v['default'] = None
 
