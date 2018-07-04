@@ -7,3 +7,9 @@ numpy
 scipy
 pymc
 pandas
+#pre-commit stuff
+pre-commit
+yapf
+prospector
+pylint
+pylint_flask
