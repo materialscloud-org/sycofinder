@@ -7,6 +7,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 import pandas as pd
+import numpy as np
 import uniform
 
 # variables
@@ -15,17 +16,16 @@ variables = collections.OrderedDict([
     ('dmf', dict(label='DMF', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('etoh', dict(label='Ethanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('meoh', dict(label='Methanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('iproh',
-     dict(label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('r_ratio',
-     dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
-    ('temperature',
-     dict(label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
-    ('power',
-     dict(label='Microwave Power', range=[150.0, 250.0], weight=2.0,
-          unit='W')),
-    ('time',
-     dict(label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
+    ('iproh', dict(
+        label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
+    ('r_ratio', dict(
+        label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
+    ('temperature', dict(
+        label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
+    ('power', dict(
+        label='Microwave Power', range=[150.0, 250.0], weight=2.0, unit='W')),
+    ('time', dict(
+        label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
 ])
 labels = variables.keys()
 nq = len(variables)
@@ -70,10 +70,7 @@ for k, v in variables.iteritems():
         desc = v['label']
     else:
         desc = "{} [{}]: ".format(v['label'], v['unit'])
-    if 'default' not in v.keys():
-        v['default'] = None
-
-    controls = get_controls(k, desc, v['range'], v['default'])
+    controls = get_controls(k, desc, v['range'])
     controls_dict[k] = controls
 
 head_row = html.Tr([
@@ -135,20 +132,19 @@ for k, v in controls_dict.iteritems():
     dash.dependencies.Output('compute_info', 'children'),
     [dash.dependencies.Input('btn_compute', 'n_clicks')],
     low_states + high_states + weight_states + [nsamples_state])
-# pylint: disable=unused-argument
+# pylint: disable=unused-argument, unused-variable
 def on_compute(out, *args):
     """Callback for clicking compute button"""
 
     if len(args) != ninps:
         raise ValueError("Expected {} arguments".format(ninps))
 
-    low_vals = [args[i] for i in range(nq)]
-    high_vals = [args[i + nq] for i in range(nq)]
-    weight_vals = [args[i + 2 * nq] for i in range(nq)]
+    low_vals = np.array([args[i] for i in range(nq)])
+    high_vals = np.array([args[i + nq] for i in range(nq)])
+    weight_vals = 10**np.array([args[i + 2 * nq] for i in range(nq)])
     nsamples = args[-1]
 
     samples = uniform.compute(
-        var_importance=weight_vals,
         var_LB=low_vals,
         var_UB=high_vals,
         num_samples=nsamples,
