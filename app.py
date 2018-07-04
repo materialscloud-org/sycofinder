@@ -31,7 +31,8 @@ variables = collections.OrderedDict([
 labels = variables.keys()
 nq = len(variables)
 
-weight_range = [0, 10]
+weight_range = [-1,1]
+grid_points = 5
 
 def get_controls(id, desc, range, default=1.0):
     """Get controls for one variable.
@@ -41,10 +42,18 @@ def get_controls(id, desc, range, default=1.0):
      * range 
      * weight
     """
-    range_low = dcc.Input(id=id+"_low", type='number', value=range[0])
-    range_high = dcc.Input(id=id+"_high", type='number', value=range[1])
-    slider = dcc.Slider(id=id+"_weight", min=weight_range[0], max=weight_range[1], value=1.0, step=0.1)
-    return html.Div([html.Span(desc), range_low, range_high, html.Span(slider, className="slider"), html.Span('weight: '), html.Span('', id=id+"_weight_label")])
+    range_low = dcc.Input(id=id+"_low", type='number', value=range[0], className="range")
+    range_high = dcc.Input(id=id+"_high", type='number', value=range[1], className="range")
+    slider = dcc.Slider(id=id+"_weight", min=weight_range[0], max=weight_range[1], value=0.0, step=0.01)
+    grid = dcc.Input(id=id+"_grid", type='number', value=grid_points)
+    return html.Tr([
+        html.Td(desc), 
+        html.Td([range_low, range_high]), 
+        html.Td([
+            html.Span(slider, className="slider"), 
+            html.Span('', id=id+"_weight_label")
+        ])
+    ])
 
 controls_dict = collections.OrderedDict()
 for k,v in variables.iteritems():
@@ -58,7 +67,12 @@ for k,v in variables.iteritems():
     controls = get_controls(k, desc, v['range'], v['default'])
     controls_dict[k] = controls
 
-controls_html = html.Div( list(controls_dict.values()), id='controls' )
+head_row = html.Tr([
+        html.Th('Variable'),
+        html.Th('Range'),
+        html.Th('Weight'),
+   ])
+controls_html = html.Table([head_row] + list(controls_dict.values()), id='controls' )
 low_states = [ dash.dependencies.State(k+"_low",'value') for k in labels ]
 high_states = [ dash.dependencies.State(k+"_high",'value') for k in labels ]
 weight_states = [ dash.dependencies.State(k+"_weight",'value') for k in labels ]
@@ -74,7 +88,9 @@ css = html.Link(
 )
 
 # Creation of dash app
-app = dash.Dash()
+app = dash.Dash(__name__, static_folder='static')
+app.scripts.config.serve_locally=True
+app.css.config.serve_locally=True
 app.layout = html.Div([css, controls_html, 
     #inputs_html, 
     btn_compute, 
@@ -83,11 +99,13 @@ app.layout = html.Div([css, controls_html,
     ])
 
 
-# needed for css
-@app.server.route('/static/<path:path>')
-def static_file(path):
-    static_folder = os.path.join(os.getcwd(), 'static')
-    return send_from_directory(static_folder, path)
+## needed for css
+#@app.server.route('/static/<path:path>')
+#def static_file(path):
+#    static_folder = os.path.join(os.getcwd(), 'static')
+#    return send_from_directory(static_folder, path)
+
+app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
 
 # slider ranges
 for k,v in controls_dict.iteritems():
@@ -95,7 +113,7 @@ for k,v in controls_dict.iteritems():
             dash.dependencies.Output(k+'_weight_label','children'),
             [dash.dependencies.Input(k+'_weight','value')])
     def slider_output(value):
-        return "{}".format(value)
+        return "{:5.2f}".format(10**value)
 
 @app.callback(
     #[dash.dependencies.Output('plot_info', 'children'),

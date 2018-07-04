@@ -1,18 +1,12 @@
 .slider { 
-    width: 250px;
+    width: 50px;
     display: inline-block;
-    padding: 0px 15px;
+    margin: 0px 15px;
 }
 
-.dropdown { 
-    width: 250px;
+.range { 
+    width: 50px;
     display: inline-block;
-    padding: 0px 15px;
+    margin: 0px 15px;
 }
 
-.plot { 
-   // Doesn't seem to work
-   // width: 500px;
-   // display: inline-block;
-   padding: 0px 15px;
-}
