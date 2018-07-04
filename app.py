@@ -12,10 +12,6 @@ import numpy as np
 from flask import redirect, send_from_directory
 import os
 
-# search UI
-#style = {"description_width":"220px"}
-#layout = ipw.Layout(width="90%")
-
 # variables
 variables = collections.OrderedDict([
     ('h2o', dict(label='Water', range=[1.0, 6.0], weight=1.0, unit='ml')),
@@ -98,16 +94,10 @@ app.layout = html.Div([css, controls_html,
     #click_info
     ])
 
+# Use custom CSS
+# app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
 
-## needed for css
-#@app.server.route('/static/<path:path>')
-#def static_file(path):
-#    static_folder = os.path.join(os.getcwd(), 'static')
-#    return send_from_directory(static_folder, path)
-
-app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
-
-# slider ranges
+# Callbacks for slider labels
 for k,v in controls_dict.iteritems():
     @app.callback(
             dash.dependencies.Output(k+'_weight_label','children'),
@@ -116,12 +106,12 @@ for k,v in controls_dict.iteritems():
         return "{:5.2f}".format(10**value)
 
 @app.callback(
-    #[dash.dependencies.Output('plot_info', 'children'),
     dash.dependencies.Output('compute_info', 'children'),
     [dash.dependencies.Input('btn_compute', 'n_clicks')],
     low_states+high_states+weight_states
     )
-def update_output(n_clicks, *args):
+def on_compute(n_clicks, *args):
+    """Callback for clicking compute button"""
 
     if len(args) != ninps:
         raise ValueError("Expected {} arguments".format(ninps))
