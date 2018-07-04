@@ -8,9 +8,12 @@ import dash_html_components as html
 import plotly.graph_objs as go
 
 import numpy as np
+import pandas as pd
 
 from flask import redirect, send_from_directory
 import os
+
+import uniform
 
 # variables
 variables = collections.OrderedDict([
@@ -29,6 +32,17 @@ nq = len(variables)
 
 weight_range = [-1,1]
 grid_points = 5
+
+def generate_table(dataframe, max_rows=10):
+    return html.Table(
+        # Header
+        [html.Tr([html.Th(col) for col in dataframe.columns])] +
+
+        # Body
+        [html.Tr([
+            html.Td('{:.2f}'.format(dataframe.iloc[i][col])) for col in dataframe.columns
+        ]) for i in range(min(len(dataframe), max_rows))]
+    )
 
 def get_controls(id, desc, range, default=1.0):
     """Get controls for one variable.
@@ -76,7 +90,7 @@ weight_states = [ dash.dependencies.State(k+"_weight",'value') for k in labels ]
 ninps = len(low_states + high_states + weight_states)
 
 btn_compute = html.Div([html.Button('compute', id='btn_compute'),
-    dcc.Markdown('', id='compute_info')])
+    html.Div('', id='compute_info')])
 
 css = html.Link(
     rel='stylesheet',
@@ -110,25 +124,34 @@ for k,v in controls_dict.iteritems():
     [dash.dependencies.Input('btn_compute', 'n_clicks')],
     low_states+high_states+weight_states
     )
-def on_compute(n_clicks, *args):
+def on_compute(out, *args):
     """Callback for clicking compute button"""
 
     if len(args) != ninps:
         raise ValueError("Expected {} arguments".format(ninps))
-    low_vals = { labels[i] : args[i] for i in range(nq) }
-    high_vals = { labels[i] : args[i+nq] for i in range(nq) }
-    weight_vals = { labels[i] : args[i+2*nq] for i in range(nq) }
 
-    return compute(low_vals, high_vals, weight_vals)
+    low_vals = [ args[i] for i in range(nq) ]
+    high_vals = [ args[i+nq] for i in range(nq) ]
+    weight_vals = [ args[i+2*nq] for i in range(nq) ]
 
-def compute(low_vals, high_vals, weight_vals):
-    """Compute most diverse set of inputs.
+    samples = uniform.compute(
+            var_importance=weight_vals,
+            var_LB=low_vals,
+            var_UB=high_vals,
+            )
+    df = pd.DataFrame(data=samples, columns=labels)
+    pd.options.display.float_format = '{:.2f}'.format
 
-    :param low_vals: list of lower bounds
-    :param high_vals: list of higher bounds
-    :param weight_vals: list of weights
-    """
-    pass
+    return generate_table(df)
+
+    ## artificially reduce number of variables for speed
+    #nvars=3
+    #import maxmin
+    #return maxmin.compute(
+    #        var_importance=weight_vals.values()[:nvars],
+    #        var_LB=low_vals.values()[:nvars],
+    #        var_UB=high_vals.values()[:nvars],
+    #        )
 
 if __name__ == '__main__':
     app.run_server(debug=True)
