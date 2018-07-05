@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+from builtins import range
 import collections
 
 import dash
@@ -16,18 +17,19 @@ variables = collections.OrderedDict([
     ('dmf', dict(label='DMF', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('etoh', dict(label='Ethanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('meoh', dict(label='Methanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('iproh', dict(
-        label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('r_ratio', dict(
-        label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
-    ('temperature', dict(
-        label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
-    ('power', dict(
-        label='Microwave Power', range=[150.0, 250.0], weight=2.0, unit='W')),
-    ('time', dict(
-        label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
+    ('iproh',
+     dict(label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
+    ('r_ratio',
+     dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
+    ('temperature',
+     dict(label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
+    ('power',
+     dict(label='Microwave Power', range=[150.0, 250.0], weight=2.0,
+          unit='W')),
+    ('time',
+     dict(label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
 ])
-labels = variables.keys()
+labels = list(variables.keys())
 nq = len(variables)
 
 weight_range = [-1, 1]
@@ -65,7 +67,7 @@ def get_controls(id, desc, range, default_weight=0.0):
 
 
 controls_dict = collections.OrderedDict()
-for k, v in variables.iteritems():
+for k, v in variables.items():
     if v['unit'] is None:
         desc = v['label']
     else:
@@ -119,7 +121,7 @@ app.layout = html.Div([
 # app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
 
 # Callbacks for slider labels
-for k, v in controls_dict.iteritems():
+for k, v in controls_dict.items():
 
     @app.callback(
         dash.dependencies.Output(k + '_weight_label', 'children'),

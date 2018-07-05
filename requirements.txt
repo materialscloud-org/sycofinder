@@ -1,3 +1,4 @@
+future
 dash
 dash_renderer
 dash-core-components
