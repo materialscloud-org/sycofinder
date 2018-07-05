@@ -17,17 +17,16 @@ variables = collections.OrderedDict([
     ('dmf', dict(label='DMF', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('etoh', dict(label='Ethanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('meoh', dict(label='Methanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('iproh',
-     dict(label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('r_ratio',
-     dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
-    ('temperature',
-     dict(label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
-    ('power',
-     dict(label='Microwave Power', range=[150.0, 250.0], weight=2.0,
-          unit='W')),
-    ('time',
-     dict(label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
+    ('iproh', dict(
+        label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
+    ('r_ratio', dict(
+        label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
+    ('temperature', dict(
+        label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
+    ('power', dict(
+        label='Microwave Power', range=[150.0, 250.0], weight=2.0, unit='W')),
+    ('time', dict(
+        label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
 ])
 labels = list(variables.keys())
 nq = len(variables)
@@ -58,7 +57,7 @@ def get_controls(id, desc, range, default_weight=0.0):
     #grid = dcc.Input(id=id + "_grid", type='number', value=grid_points)
     return html.Tr([
         html.Td(desc),
-        html.Td([range_low, range_high]),
+        html.Td([range_low, html.Span('to'), range_high]),
         html.Td([
             html.Span(slider, className="slider"),
             html.Span('', id=id + "_weight_label")
@@ -71,7 +70,7 @@ for k, v in variables.items():
     if v['unit'] is None:
         desc = v['label']
     else:
-        desc = "{} [{}]: ".format(v['label'], v['unit'])
+        desc = "{} [{}]".format(v['label'], v['unit'])
     controls = get_controls(k, desc, v['range'])
     controls_dict[k] = controls
 
@@ -135,8 +134,10 @@ for k, v in controls_dict.items():
     [dash.dependencies.Input('btn_compute', 'n_clicks')],
     low_states + high_states + weight_states + [nsamples_state])
 # pylint: disable=unused-argument, unused-variable
-def on_compute(out, *args):
+def on_compute(n_clicks, *args):
     """Callback for clicking compute button"""
+    if n_clicks is None:
+        return
 
     if len(args) != ninps:
         raise ValueError("Expected {} arguments".format(ninps))
