@@ -13,6 +13,7 @@ import numpy as np
 import uniform
 
 # variables
+MAX_NVARS = 20
 variables = collections.OrderedDict([
     ('h2o', dict(label='Water', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('dmf', dict(label='DMF', range=[1.0, 6.0], weight=1.0, unit='ml')),
@@ -29,6 +30,12 @@ variables = collections.OrderedDict([
     ('time', dict(
         label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
 ])
+
+# Fill up to MAX_NVARS (needed to define callbacks)
+for i in range(len(variables), MAX_NVARS):
+    k = 'variable_{}'.format(i + 1)
+    variables[k] = dict(label=k, range=[0, 1], weight=1, unit=None)
+
 labels = list(variables.keys())
 nq = len(variables)
 
@@ -56,14 +63,16 @@ def get_controls(id, desc, range, default_weight=0.0):
         value=default_weight,
         step=0.01)
     #grid = dcc.Input(id=id + "_grid", type='number', value=ngrid)
-    return html.Tr([
-        html.Td(desc),
-        html.Td([range_low, html.Span('to'), range_high]),
-        html.Td([
-            html.Span(slider, className="slider"),
-            html.Span('', id=id + "_weight_label")
-        ])
-    ])
+    return html.Tr(
+        [
+            html.Td(desc),
+            html.Td([range_low, html.Span('to'), range_high]),
+            html.Td([
+                html.Span(slider, className="slider"),
+                html.Span('', id=id + "_weight_label")
+            ])
+        ],
+        id=id + "_tr")
 
 
 controls_dict = collections.OrderedDict()
@@ -88,6 +97,11 @@ weight_states = [
     dash.dependencies.State(k + "_weight", 'value') for k in labels
 ]
 
+inp_nvars = html.Div([
+    html.Span('Number of variables: '),
+    dcc.Input(id='nvars', type='number', value=5, className="nvars range")
+])
+
 inp_nsamples = html.Div([
     html.Span('Number of samples: '),
     dcc.Input(
@@ -110,6 +124,7 @@ app.scripts.config.serve_locally = True
 app.css.config.serve_locally = True
 app.layout = html.Div([
     css,
+    inp_nvars,
     controls_html,
     inp_nsamples,
     btn_compute,
@@ -127,7 +142,25 @@ for k, v in controls_dict.items():
         dash.dependencies.Output(k + '_weight_label', 'children'),
         [dash.dependencies.Input(k + '_weight', 'value')])
     def slider_output(value):
+        """Callback for updating slider value"""
         return "{:5.2f}".format(10**value)
+
+
+for i in range(MAX_NVARS):
+
+    @app.callback(
+        dash.dependencies.Output(labels[i] + "_tr", 'style'),
+        [dash.dependencies.Input('nvars', 'value')])
+    def toggle_visibility(nvars, i=i):
+        """Callback for setting variable visibility"""
+        style = {}
+
+        if i + 1 <= nvars:
+            style['display'] = 'block'
+        else:
+            style['display'] = 'none'
+
+        return style
 
 
 @app.callback(
@@ -136,12 +169,12 @@ for k, v in controls_dict.items():
     low_states + high_states + weight_states + [nsamples_state])
 # pylint: disable=unused-argument, unused-variable
 def on_compute(n_clicks, *args):
-    """Callback for clicking compute button"""
-    if n_clicks is None:
+    """callback for clicking compute button"""
+    if n_clicks is none:
         return
 
     if len(args) != ninps:
-        raise ValueError("Expected {} arguments".format(ninps))
+        raise valueerror("expected {} arguments".format(ninps))
 
     low_vals = np.array([args[i] for i in range(nq)])
     high_vals = np.array([args[i + nq] for i in range(nq)])
@@ -151,26 +184,26 @@ def on_compute(n_clicks, *args):
     mode = 'maxmin'
     if mode == 'uniform':
         samples = uniform.compute(
-            var_LB=low_vals,
-            var_UB=high_vals,
+            var_lb=low_vals,
+            var_ub=high_vals,
             num_samples=nsamples,
         )
-        df = pd.DataFrame(data=samples, columns=labels)
+        df = pd.dataframe(data=samples, columns=labels)
     elif mode == 'maxmin':
         import maxmin
         # artificially reduce number of variables for speed
         nvars = 3
         samples = maxmin.compute(
             var_importance=weight_vals[:nvars],
-            var_LB=low_vals[:nvars],
-            var_UB=high_vals[:nvars],
+            var_lb=low_vals[:nvars],
+            var_ub=high_vals[:nvars],
             num_samples=nsamples,
             ngrids_per_dim=ngrid,
         )
-        df = pd.DataFrame(data=samples, columns=labels[:nvars])
+        df = pd.dataframe(data=samples, columns=labels[:nvars])
 
     else:
-        raise ValueError("Unknown mode '{}'".format(mode))
+        raise valueerror("unknown mode '{}'".format(mode))
 
     return generate_table(df)
 
