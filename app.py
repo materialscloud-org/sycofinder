@@ -11,6 +11,7 @@ import dash_html_components as html
 import pandas as pd
 import numpy as np
 import uniform
+import maxmin
 
 # variables
 variables = collections.OrderedDict([
@@ -51,6 +52,8 @@ def get_controls(id, desc, range, default_weight=0.0):
      * range 
      * weight
     """
+    label = dcc.Input(
+        id=id + "_label", type='text', value=desc, className="label")
     range_low = dcc.Input(
         id=id + "_low", type='number', value=range[0], className="range")
     range_high = dcc.Input(
@@ -64,7 +67,7 @@ def get_controls(id, desc, range, default_weight=0.0):
     #grid = dcc.Input(id=id + "_grid", type='number', value=ngrid)
     return html.Tr(
         [
-            html.Td(desc),
+            html.Td(label),
             html.Td([range_low, html.Span('to'), range_high]),
             html.Td([
                 html.Span(slider, className="slider"),
@@ -86,6 +89,9 @@ head_row = html.Tr([
 ])
 controls_html = html.Table(
     [head_row] + list(controls_dict.values()), id='controls')
+label_states = [
+    dash.dependencies.State(k + "_label", 'value') for k in var_ids
+]
 low_states = [dash.dependencies.State(k + "_low", 'value') for k in var_ids]
 high_states = [dash.dependencies.State(k + "_high", 'value') for k in var_ids]
 weight_states = [
@@ -109,7 +115,7 @@ inp_nsamples = html.Div([
         id='nsamples', type='number', value=20, className="nsamples range")
 ])
 
-ninps = len(low_states + high_states + weight_states) + 2
+ninps = len(label_states + low_states + high_states + weight_states) + 2
 
 btn_compute = html.Div([
     html.Button('compute', id='btn_compute'),
@@ -162,7 +168,7 @@ for i in range(NVARS_MAX):
         return style
 
 
-states = low_states + high_states + weight_states
+states = label_states + low_states + high_states + weight_states
 states += [dash.dependencies.State('inp_nvars', 'value')]
 states += [dash.dependencies.State('nsamples', 'value')]
 
@@ -183,9 +189,10 @@ def on_compute(n_clicks, *args):
     nsamples = args[-1]
     nvars = args[-2]
 
-    low_vals = np.array([args[i] for i in range(nvars)])
-    high_vals = np.array([args[i + NVARS_MAX] for i in range(nvars)])
-    weight_vals = 10**np.array([args[i + 2 * NVARS_MAX] for i in range(nvars)])
+    labels = args[:nvars]
+    low_vals = np.array([args[i + NVARS_MAX] for i in range(nvars)])
+    high_vals = np.array([args[i + 2 * NVARS_MAX] for i in range(nvars)])
+    weight_vals = 10**np.array([args[i + 3 * NVARS_MAX] for i in range(nvars)])
 
     mode = 'maxmin'
     if mode == 'uniform':
@@ -194,10 +201,8 @@ def on_compute(n_clicks, *args):
             var_UB=high_vals,
             num_samples=nsamples,
         )
-        df = pd.DataFrame(data=samples, columns=var_labels[:nvars])
+        df = pd.DataFrame(data=samples, columns=labels)
     elif mode == 'maxmin':
-        import maxmin
-        # artificially reduce number of variables for speed
         samples = maxmin.compute(
             var_importance=weight_vals,
             var_LB=low_vals,
@@ -205,7 +210,7 @@ def on_compute(n_clicks, *args):
             num_samples=nsamples,
             ngrids_per_dim=ngrid,
         )
-        df = pd.DataFrame(data=samples, columns=var_labels[:nvars])
+        df = pd.DataFrame(data=samples, columns=labels)
 
     else:
         raise ValueError("Unknown mode '{}'".format(mode))
