@@ -10,8 +10,8 @@ import dash_html_components as html
 
 import pandas as pd
 import numpy as np
-import uniform
-import maxmin
+from . import uniform
+from . import maxmin
 
 # variables
 variables = collections.OrderedDict([
@@ -37,7 +37,7 @@ for i in range(len(variables), NVARS_MAX):
     variables[k] = dict(label=k, range=[0, 1], weight=1)
 
 var_ids = list(variables.keys())
-var_labels = [v['label'] for v in variables.values()]
+var_labels = [v['label'] for v in list(variables.values())]
 
 weight_range = [-1, 1]
 ngrid = 5
@@ -78,7 +78,7 @@ def get_controls(id, desc, range, default_weight=0.0):
 
 
 controls_dict = collections.OrderedDict()
-for k, v in variables.items():
+for k, v in list(variables.items()):
     controls = get_controls(k, v['label'], v['range'])
     controls_dict[k] = controls
 
@@ -142,7 +142,7 @@ app.layout = html.Div([
 # app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
 
 # Callbacks for slider var_ids
-for k, v in controls_dict.items():
+for k, v in list(controls_dict.items()):
 
     @app.callback(
         dash.dependencies.Output(k + '_weight_label', 'children'),
@@ -230,8 +230,3 @@ def generate_table(dataframe, max_rows=100):
                 for col in dataframe.columns
             ]) for i in range(min(len(dataframe), max_rows))
         ])
-
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
-    #app.run_server()

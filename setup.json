@@ -1,0 +1,33 @@
+{
+    "name": "maxdiv",
+    "author": "Leopold Talirz",
+    "author_email": "leopold.talirz@gmail.com",
+    "description": "Web App for computing diverse set of parameters in given variable space.",
+    "url": "https://github.com/ltalirz/https://github.com/ltalirz/lsmo-maxdiv-app",
+    "license": "MIT",
+    "classifiers": [
+        "Programming Language :: Python"
+    ],
+    "version": "0.1.0a1",
+    "setup_requires": ["numpy"],
+    "install_requires": [
+        "future",
+        "dash",
+        "dash_renderer",
+        "dash-core-components",
+        "dash-html-components",
+        "plotly",
+        "numpy",
+        "scipy",
+        "pymc",
+        "pandas"
+    ],
+    "extras_require": {
+        "pre-commit": [
+            "pre-commit",
+            "yapf",
+            "prospector",
+            "pylint"
+        ]
+    }
+}
