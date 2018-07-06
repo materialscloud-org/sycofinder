@@ -15,19 +15,17 @@ import uniform
 # variables
 variables = collections.OrderedDict([
     ('temperature', dict(
-        label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
-    ('r_ratio', dict(
-        label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
+        label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
+    ('r_ratio', dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0)),
     ('power', dict(
-        label='Microwave Power', range=[150.0, 250.0], weight=2.0, unit='W')),
-    ('time', dict(
-        label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
-    ('h2o', dict(label='Water', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('dmf', dict(label='DMF', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('etoh', dict(label='Ethanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('meoh', dict(label='Methanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
+        label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
+    ('time', dict(label='Reaction time [min]', range=[2.0, 60.0], weight=2.0)),
+    ('h2o', dict(label='Water [ml]', range=[1.0, 6.0], weight=1.0)),
+    ('dmf', dict(label='DMF [ml]', range=[1.0, 6.0], weight=1.0)),
+    ('etoh', dict(label='Ethanol [ml]', range=[1.0, 6.0], weight=1.0)),
+    ('meoh', dict(label='Methanol [ml]', range=[1.0, 6.0], weight=1.0)),
     ('iproh', dict(
-        label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
+        label='Isopropyl alcohol [ml]', range=[1.0, 6.0], weight=1.0)),
 ])
 NVARS_DEFAULT = len(variables)
 
@@ -35,7 +33,8 @@ NVARS_DEFAULT = len(variables)
 NVARS_MAX = 20
 for i in range(len(variables), NVARS_MAX):
     k = 'variable_{}'.format(i + 1)
-    variables[k] = dict(label=k, range=[0, 1], weight=1, unit=None)
+    variables[k] = dict(label=k, range=[0, 1], weight=1)
+
 var_ids = list(variables.keys())
 var_labels = [v['label'] for v in variables.values()]
 
@@ -77,11 +76,7 @@ def get_controls(id, desc, range, default_weight=0.0):
 
 controls_dict = collections.OrderedDict()
 for k, v in variables.items():
-    if v['unit'] is None:
-        desc = v['label']
-    else:
-        desc = "{} [{}]".format(v['label'], v['unit'])
-    controls = get_controls(k, desc, v['range'])
+    controls = get_controls(k, v['label'], v['range'])
     controls_dict[k] = controls
 
 head_row = html.Tr([
