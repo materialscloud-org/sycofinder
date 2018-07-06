@@ -2,9 +2,18 @@
 
 Computes maximally diverse set of input parameters
 
-## Installation
+## Run locally
 
 ```
 pip install -e .
 python run.py
 ```
+
+## Run inside docker container
+
+```
+./build-docker.sh
+./run-docker.sh
+# nagivate to localhost:8050
+```
+
