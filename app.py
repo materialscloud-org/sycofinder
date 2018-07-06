@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from builtins import range
+from builtins import range  # pylint: disable=redefined-builtin
+
 import collections
 
 import dash
@@ -32,7 +33,7 @@ labels = list(variables.keys())
 nq = len(variables)
 
 weight_range = [-1, 1]
-grid_points = 5
+ngrid = 5
 
 
 # pylint: disable=redefined-builtin
@@ -54,7 +55,7 @@ def get_controls(id, desc, range, default_weight=0.0):
         max=weight_range[1],
         value=default_weight,
         step=0.01)
-    #grid = dcc.Input(id=id + "_grid", type='number', value=grid_points)
+    #grid = dcc.Input(id=id + "_grid", type='number', value=ngrid)
     return html.Tr([
         html.Td(desc),
         html.Td([range_low, html.Span('to'), range_high]),
@@ -147,23 +148,31 @@ def on_compute(n_clicks, *args):
     weight_vals = 10**np.array([args[i + 2 * nq] for i in range(nq)])
     nsamples = args[-1]
 
-    samples = uniform.compute(
-        var_LB=low_vals,
-        var_UB=high_vals,
-        num_samples=nsamples,
-    )
-    df = pd.DataFrame(data=samples, columns=labels)
+    mode = 'maxmin'
+    if mode == 'uniform':
+        samples = uniform.compute(
+            var_LB=low_vals,
+            var_UB=high_vals,
+            num_samples=nsamples,
+        )
+        df = pd.DataFrame(data=samples, columns=labels)
+    elif mode == 'maxmin':
+        import maxmin
+        # artificially reduce number of variables for speed
+        nvars = 3
+        samples = maxmin.compute(
+            var_importance=weight_vals[:nvars],
+            var_LB=low_vals[:nvars],
+            var_UB=high_vals[:nvars],
+            num_samples=nsamples,
+            ngrids_per_dim=ngrid,
+        )
+        df = pd.DataFrame(data=samples, columns=labels[:nvars])
+
+    else:
+        raise ValueError("Unknown mode '{}'".format(mode))
 
     return generate_table(df)
-
-    ## artificially reduce number of variables for speed
-    #nvars=3
-    #import maxmin
-    #return maxmin.compute(
-    #        var_importance=weight_vals.values()[:nvars],
-    #        var_LB=low_vals.values()[:nvars],
-    #        var_UB=high_vals.values()[:nvars],
-    #        )
 
 
 def generate_table(dataframe, max_rows=100):
