@@ -103,6 +103,8 @@ inp_nvars = html.Div([
         id='inp_nvars',
         type='number',
         value=NVARS_DEFAULT,
+        max=NVARS_MAX,
+        min=1,
         className="nvars range")
 ])
 
