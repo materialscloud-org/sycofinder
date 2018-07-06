@@ -18,7 +18,7 @@ def check_sample(a, var_LB, var_UB):
     # For example, the volume of solvent in our study should not be above 6ml.
     a = np.asarray(a)
     a = np.multiply(a, (var_UB - var_LB)) + var_LB
-    vol = np.sum(a[0:5])
+    vol = np.sum(a[4:9])
     cond = vol <= 6 and vol >= 1
 
     return cond
@@ -82,9 +82,6 @@ def compute(var_importance, var_LB, var_UB, num_samples=10, ngrids_per_dim=5):
         endpoint=True,
     )
     print("On each dimension, we sample: ", grids_dim)
-    #var_importance  =  np.array([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0])
-    #var_LB  =          np.array(  [ 0.0 ,  0.0  , 0.00 ,  0.00   ,  0.00    ,  0.80     ,  100        , 150   ,   2    ])
-    #var_UB  =          np.array(  [ 6.0 ,  6.0  , 6.00 ,  6.00   ,  6.00    ,  1.80     ,  200        , 250   ,   60   ])
     NPS1 = itertools.product(grids_dim, repeat=num_variables)
     #NPS1=[np.array(i) for i in NPS1 if check_sample(i,var_LB,var_UB)]
     NPS1 = [np.array(i) for i in NPS1]
@@ -92,16 +89,7 @@ def compute(var_importance, var_LB, var_UB, num_samples=10, ngrids_per_dim=5):
     print("In total, there are ", len(NPS1), "samples in the space\n")
 
     norm_diverse_set, sel_ind = min_max([], num_samples, NPS1, var_importance)
-    print(NPS1[sel_ind])
     print(norm_diverse_set)
     diverse_set = np.multiply(NPS1[sel_ind], var_UB - var_LB) + var_LB
-    #print(diverse_set)
-
-    #result = ""
-    #for line in diverse_set:
-    #    result += "  ".join("%10.1f"%(round(elem*2)/2) for elem in line[:5])
-    #    result += "%10.1f"%(line[5])
-    #    result += "  ".join("%10.0f"%(round(elem*2)/2) for elem in line[6:])
-    #    result += "\n"
 
     return diverse_set

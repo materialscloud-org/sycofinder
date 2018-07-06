@@ -14,20 +14,20 @@ import uniform
 
 # variables
 variables = collections.OrderedDict([
+    ('temperature', dict(
+        label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
+    ('r_ratio', dict(
+        label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
+    ('power', dict(
+        label='Microwave Power', range=[150.0, 250.0], weight=2.0, unit='W')),
+    ('time', dict(
+        label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
     ('h2o', dict(label='Water', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('dmf', dict(label='DMF', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('etoh', dict(label='Ethanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('meoh', dict(label='Methanol', range=[1.0, 6.0], weight=1.0, unit='ml')),
     ('iproh', dict(
         label='Isopropyl alcohol', range=[1.0, 6.0], weight=1.0, unit='ml')),
-    ('r_ratio', dict(
-        label='Reactants ratio', range=[0.8, 1.8], weight=1.0, unit=None)),
-    ('temperature', dict(
-        label='Temperature', range=[100.0, 200.0], weight=1.0, unit='C')),
-    ('power', dict(
-        label='Microwave Power', range=[150.0, 250.0], weight=2.0, unit='W')),
-    ('time', dict(
-        label='Reaction time', range=[2.0, 60.0], weight=2.0, unit='min')),
 ])
 labels = list(variables.keys())
 nq = len(variables)
@@ -78,7 +78,7 @@ for k, v in variables.items():
 head_row = html.Tr([
     html.Th('Variable'),
     html.Th('Range'),
-    html.Th('Weight'),
+    html.Th('Importance'),
 ])
 controls_html = html.Table(
     [head_row] + list(controls_dict.values()), id='controls')
@@ -159,7 +159,7 @@ def on_compute(n_clicks, *args):
     elif mode == 'maxmin':
         import maxmin
         # artificially reduce number of variables for speed
-        nvars = 3
+        nvars = 5
         samples = maxmin.compute(
             var_importance=weight_vals[:nvars],
             var_LB=low_vals[:nvars],
