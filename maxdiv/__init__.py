@@ -10,16 +10,17 @@ import dash_html_components as html
 
 import pandas as pd
 import numpy as np
+import urllib
 from . import uniform
 from . import maxmin
 
 # variables
 variables = collections.OrderedDict([
-    ('temperature', dict(
-        label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
+    ('temperature',
+     dict(label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
     ('r_ratio', dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0)),
-    ('power', dict(
-        label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
+    ('power',
+     dict(label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
     ('time', dict(label='Reaction time [min]', range=[2.0, 60.0], weight=2.0)),
     ('h2o', dict(label='Water [ml]', range=[1.0, 6.0], weight=1.0)),
     ('dmf', dict(label='DMF [ml]', range=[1.0, 6.0], weight=1.0)),
@@ -152,7 +153,7 @@ for k, v in list(controls_dict.items()):
         return "{:5.2f}".format(10**value)
 
 
-# Hide unselected variables
+# Callbacks to hide unselected variables
 for i in range(NVARS_MAX):
 
     @app.callback(
@@ -180,7 +181,7 @@ states += [dash.dependencies.State('nsamples', 'value')]
 def on_compute(n_clicks, *args):
     """Callback for clicking compute button"""
     if n_clicks is None:
-        return
+        return ''
 
     if len(args) != ninps:
         raise ValueError("Expected {} arguments".format(ninps))
@@ -215,7 +216,18 @@ def on_compute(n_clicks, *args):
     else:
         raise ValueError("Unknown mode '{}'".format(mode))
 
-    return generate_table(df)
+    table = generate_table(df)
+
+    # for download, add column for filling in experiments
+    df['Fitness'] = ""
+    csv_string = df.to_csv(index=False, encoding='utf-8')
+    download_link = html.A(
+        'Download CSV',
+        download="maxdiv.csv",
+        href="data:text/csv;charset=utf-8," + urllib.quote(csv_string),
+        target="_blank")
+
+    return [table, download_link]
 
 
 def generate_table(dataframe, max_rows=100):
