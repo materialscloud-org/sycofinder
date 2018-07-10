@@ -1,0 +1,89 @@
+# -*- coding: utf-8 -*-
+from __future__ import print_function
+
+import base64
+import io
+
+import dash
+from dash.dependencies import Input, Output
+import dash_core_components as dcc
+import dash_html_components as html
+import dash_table_experiments as dt
+
+import pandas as pd
+
+from . import ga
+
+app = dash.Dash()
+
+app.scripts.config.serve_locally = True
+
+app.layout = html.Div([
+    dcc.Upload(
+        id='upload-data',
+        children=html.Div(['Drag and Drop or ',
+                           html.A('Select Files')]),
+        style={
+            'width': '100%',
+            'height': '60px',
+            'lineHeight': '60px',
+            'borderWidth': '1px',
+            'borderStyle': 'dashed',
+            'borderRadius': '5px',
+            'textAlign': 'center',
+            'margin': '10px'
+        },
+        # Allow multiple files to be uploaded
+        multiple=False),
+    html.Div(id='output-data-upload'),
+    html.Div(dt.DataTable(rows=[{}]), style={'display': 'none'})
+])
+
+
+# pylint: disable=unused-variable,unused-argument
+def parse_contents(contents, filename, date):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+        if 'csv' in filename:
+            # Assume that the user uploaded a CSV file
+            df = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
+        elif 'xls' in filename:
+            # Assume that the user uploaded an excel file
+            df = pd.read_excel(io.BytesIO(decoded))
+    except Exception as e:
+        print(e)
+        return html.Div(['There was an error processing this file.'])
+
+    return df
+
+
+def render_df(df):
+    return html.Div([
+        # Use the DataTable prototype component:
+        # github.com/plotly/dash-table-experiments
+        dt.DataTable(rows=df.to_dict('records')),
+    ])
+
+
+@app.callback(
+    Output('output-data-upload', 'children'), [
+        Input('upload-data', 'contents'),
+        Input('upload-data', 'filename'),
+        Input('upload-data', 'last_modified')
+    ])
+def update_output(content, name, date):
+    if content is None:
+        return ''
+
+    df = parse_contents(content, name, date)
+    new_pop, variables = ga.main(input_data=df.values, var_names=list(df))
+    df_new = pd.DataFrame(new_pop, columns=variables)
+
+    return render_df(df_new)
+
+
+app.css.append_css({
+    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+})

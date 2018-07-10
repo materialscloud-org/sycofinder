@@ -7,6 +7,7 @@ import collections
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+#import dash_table_experiments as dt
 
 import pandas as pd
 import numpy as np
@@ -217,6 +218,11 @@ def on_compute(n_clicks, *args):
         raise ValueError("Unknown mode '{}'".format(mode))
 
     table = generate_table(df)
+
+    # Note: this would have to be created beforehand
+    #table = dt.DataTable(
+    #    rows=df.to_dict('records'),
+    #)
 
     # for download, add column for filling in experiments
     df['Fitness'] = ""

@@ -16,11 +16,13 @@
         "dash_renderer",
         "dash-core-components",
         "dash-html-components",
+        "dash-table-experiments",
         "plotly",
         "numpy",
         "scipy",
         "pymc",
-        "pandas"
+        "pandas",
+        "deap"
     ],
     "extras_require": {
         "pre-commit": [
