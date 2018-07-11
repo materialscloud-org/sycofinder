@@ -109,8 +109,6 @@ def main(input_data, var_names):
     varSTD = [(m - n) / 4.0 for m, n in zip(UB, LB)]
     MGPB, MUTPB, NGEN = 0.1, 0.2, 1
     new_pop = []
-    print(input_data)
-    print(variables)
     for g in range(NGEN):
         for i in range(len(pop)):
             if random.random() < MGPB:  # migration

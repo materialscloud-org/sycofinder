@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+from __future__ import print_function
+
+import dash_html_components as html
+import urllib
+import base64
+import io
+import pandas as pd
+import numpy as np
+
+
+def generate_table(dataframe, max_rows=100, download_link=False):
+    table = html.Table(
+        # Header
+        [html.Tr([html.Th(col) for col in dataframe.columns])] +
+
+        # Body
+        [
+            html.Tr([
+                html.Td(cell_format(dataframe.iloc[i][col]))
+                for col in dataframe.columns
+            ]) for i in range(min(len(dataframe), max_rows))
+        ])
+
+    if download_link:
+        csv_string = dataframe.to_csv(
+            index=False, encoding='utf-8', float_format='%.2f')
+        link = html.A(
+            'Download CSV',
+            download="synthesis_conditions.csv",
+            href="data:text/csv;charset=utf-8," + urllib.quote(csv_string),
+            target="_blank")
+        table = [table, link]
+
+    return table
+
+
+def cell_format(value):
+    if isinstance(value, float):
+        return "{:.2f}".format(value)
+    return value
+
+
+# pylint: disable=unused-variable,unused-argument
+def parse_contents(contents, filename, date):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+        if 'csv' in filename:
+            # Assume that the user uploaded a CSV file
+            df = pd.read_csv(io.StringIO(decoded.decode('utf-8')))
+        elif 'xls' in filename:
+            # Assume that the user uploaded an excel file
+            df = pd.read_excel(io.BytesIO(decoded))
+    except Exception as e:
+        print(e)
+        return html.Div(['There was an error processing this file.'])
+
+    return df
+
+
+def validate_df(df):
+    row_titles = list(df)
+    if row_titles[-1] != 'fitness':
+        raise ValueError("Last column needs to be 'fitness', got {}".format(
+            row_titles[-1]))
+
+    if set(df.dtypes.values) != set([np.dtype('float64')]):
+        raise ValueError(
+            "All values must be floats, got data tpes\n {}".format(df.dtypes))
+
+
+#app.css.append_css({
+#    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+#})

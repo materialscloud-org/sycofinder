@@ -214,7 +214,7 @@ def on_compute(n_clicks, *args):
     # add column for filling in experiments
     df['Fitness'] = ""
 
-    from output import generate_table
+    from common import generate_table
 
     table = generate_table(df, download_link=True)
     # Note: this would have to be created beforehand

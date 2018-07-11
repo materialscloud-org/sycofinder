@@ -11,6 +11,7 @@ import dash_table_experiments as dt
 from cfinder import app
 
 import pandas as pd
+import numpy as np
 
 from . import ga
 
@@ -63,6 +64,17 @@ def render_df(df):
     ])
 
 
+def validate_df(df):
+    row_titles = list(df)
+    if row_titles[-1] != 'fitness':
+        raise ValueError("Last column needs to be 'fitness', got {}".format(
+            row_titles[-1]))
+
+    if set(df.dtypes.values) != set([np.dtype('float64')]):
+        raise ValueError(
+            "All values must be floats, got data tpes\n {}".format(df.dtypes))
+
+
 @app.callback(
     Output('output-data-upload', 'children'), [
         Input('upload-data', 'contents'),
@@ -74,12 +86,12 @@ def update_output(content, name, date):
         return ''
 
     df = parse_contents(content, name, date)
+    validate_df(df)
     new_pop, variables = ga.main(input_data=df.values, var_names=list(df))
     df_new = pd.DataFrame(new_pop, columns=variables)
-    print(df_new)
-    #df_new['Fitness'] = ""
+    df_new['Fitness'] = ""
 
-    from output import generate_table
+    from common import generate_table
     return generate_table(df_new, download_link=True)
     #return render_df(df_new)
 
