@@ -53,9 +53,8 @@ def min_max(selected_set, nsamples, NPS, var_importance):
             distances[i] = min_dist
         extime = time.time() - prtime
         prtime = time.time()
-        print(
-            np.argmax(distances), distances[np.argmax(distances)],
-            " execution time for current landmark: ", extime)
+        print(np.argmax(distances), distances[np.argmax(distances)],
+              " execution time for current landmark: ", extime)
         selected_indices.append(np.argmax(distances))
         selected_set.append(NPS[np.argmax(distances), :])
     print("Total execution time of MaxMin: ", time.time() - prtime_start)

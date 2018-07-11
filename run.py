@@ -4,9 +4,7 @@ import dash_html_components as html
 #import dash_table_experiments as dt
 from dash.dependencies import Input, Output
 
-from app import app
-import ga
-import maxdiv
+from cfinder import app, app_maxdiv, app_ga
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
@@ -31,9 +29,9 @@ home = [
 @app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/maxdiv':
-        return maxdiv.layout
+        return app_maxdiv.layout
     elif pathname == '/ga':
-        return ga.layout
+        return app_ga.layout
     return home
 
 

@@ -4,11 +4,11 @@ from __future__ import print_function
 import base64
 import io
 
-from app import app
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table_experiments as dt
+from cfinder import app
 
 import pandas as pd
 
@@ -79,7 +79,7 @@ def update_output(content, name, date):
     print(df_new)
     #df_new['Fitness'] = ""
 
-    from maxdiv import generate_table
+    from output import generate_table
     return generate_table(df_new, download_link=True)
     #return render_df(df_new)
 
