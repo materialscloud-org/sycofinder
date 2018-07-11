@@ -32,7 +32,7 @@ layout = html.Div([
         # Allow multiple files to be uploaded
         multiple=False),
     html.Div(id='output-data-upload'),
-    html.Div(dt.DataTable(rows=[{}]), style={'display': 'none'})
+    #html.Div(dt.DataTable(rows=[{}]), style={'display': 'none'})
 ])
 
 
@@ -76,8 +76,12 @@ def update_output(content, name, date):
     df = parse_contents(content, name, date)
     new_pop, variables = ga.main(input_data=df.values, var_names=list(df))
     df_new = pd.DataFrame(new_pop, columns=variables)
+    print(df_new)
+    #df_new['Fitness'] = ""
 
-    return render_df(df_new)
+    from maxdiv import generate_table
+    return generate_table(df_new, download_link=True)
+    #return render_df(df_new)
 
 
 #app.css.append_css({

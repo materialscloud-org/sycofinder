@@ -212,27 +212,20 @@ def on_compute(n_clicks, *args):
     else:
         raise ValueError("Unknown mode '{}'".format(mode))
 
-    table = generate_table(df)
+    # add column for filling in experiments
+    df['Fitness'] = ""
 
+    table = generate_table(df, download_link=True)
     # Note: this would have to be created beforehand
     #table = dt.DataTable(
     #    rows=df.to_dict('records'),
     #)
 
-    # for download, add column for filling in experiments
-    df['Fitness'] = ""
-    csv_string = df.to_csv(index=False, encoding='utf-8')
-    download_link = html.A(
-        'Download CSV',
-        download="maxdiv.csv",
-        href="data:text/csv;charset=utf-8," + urllib.quote(csv_string),
-        target="_blank")
-
-    return [table, download_link]
+    return table
 
 
-def generate_table(dataframe, max_rows=100):
-    return html.Table(
+def generate_table(dataframe, max_rows=100, download_link=False):
+    table = html.Table(
         # Header
         [html.Tr([html.Th(col) for col in dataframe.columns])] +
 
@@ -243,3 +236,15 @@ def generate_table(dataframe, max_rows=100):
                 for col in dataframe.columns
             ]) for i in range(min(len(dataframe), max_rows))
         ])
+
+    if download_link:
+        csv_string = dataframe.to_csv(
+            index=False, encoding='utf-8', float_format='%.2f')
+        link = html.A(
+            'Download CSV',
+            download="synthesis_conditions.csv",
+            href="data:text/csv;charset=utf-8," + urllib.quote(csv_string),
+            target="_blank")
+        table = [table, link]
+
+    return table

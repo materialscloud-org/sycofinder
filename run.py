@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_table_experiments as dt
+#import dash_table_experiments as dt
 from dash.dependencies import Input, Output
 
 from app import app
@@ -13,9 +13,9 @@ app.layout = html.Div([
     html.Link(rel='stylesheet', href='/static/style.css'),
     html.Link(rel='stylesheet', href='/static/upload.css'),
     html.Div(id='page-content'),
-    # work around plot.ly dash design flaw
-    # https://community.plot.ly/t/display-tables-in-dash/4707/40
-    html.Div(dt.DataTable(rows=[{}]), style={'display': 'none'})
+    ## work around plot.ly dash design flaw
+    ## https://community.plot.ly/t/display-tables-in-dash/4707/40
+    #html.Div(dt.DataTable(rows=[{}]), style={'display': 'none'})
 ])
 
 home = [
