@@ -22,7 +22,8 @@
         "scipy",
         "pymc",
         "pandas",
-        "deap"
+        "deap",
+        "sklearn"
     ],
     "extras_require": {
         "pre-commit": [
