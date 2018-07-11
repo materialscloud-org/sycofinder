@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
@@ -46,7 +46,7 @@ def update_output(content, name, date):
     if content is None:
         return dict(data=[])
 
-    from common import validate_df, parse_contents
+    from .common import validate_df, parse_contents
 
     df = parse_contents(content, name, date)
     validate_df(df)

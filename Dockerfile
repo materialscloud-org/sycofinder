@@ -18,10 +18,13 @@ RUN /pd_build/utilities.sh && \
 ### Installation
 RUN apt-get update
 
-# pymc build requirements: gfortran, liblapack-dev, numpy
-RUN apt-get -y install python-pip gfortran liblapack-dev
+RUN apt-get -y install python-pip
+RUN pip install --upgrade pip
+## pymc build requirements: gfortran, liblapack-dev, numpy
+#RUN apt-get -y install python-pip gfortran liblapack-dev
+#RUN pip install --upgrade pip numpy 
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN pip install --upgrade pip numpy 
 
 WORKDIR /home/app
 COPY maxdiv/ ./maxdiv

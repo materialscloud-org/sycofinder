@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 from builtins import range  # pylint: disable=redefined-builtin
 
 import collections
@@ -11,7 +11,7 @@ import dash_html_components as html
 
 import pandas as pd
 import numpy as np
-from . import uniform
+#from . import uniform
 from . import maxmin
 from cfinder import app
 
@@ -192,12 +192,13 @@ def on_compute(n_clicks, *args):
 
     mode = 'maxmin'
     if mode == 'uniform':
-        samples = uniform.compute(
-            var_LB=low_vals,
-            var_UB=high_vals,
-            num_samples=nsamples,
-        )
-        df = pd.DataFrame(data=samples, columns=labels)
+        pass
+        #samples = uniform.compute(
+        #    var_LB=low_vals,
+        #    var_UB=high_vals,
+        #    num_samples=nsamples,
+        #)
+        #df = pd.DataFrame(data=samples, columns=labels)
     elif mode == 'maxmin':
         samples = maxmin.compute(
             var_importance=weight_vals,
@@ -214,7 +215,7 @@ def on_compute(n_clicks, *args):
     # add column for filling in experiments
     df['Fitness'] = ""
 
-    from common import generate_table
+    from .common import generate_table
 
     table = generate_table(df, download_link=True)
     # Note: this would have to be created beforehand

@@ -7,6 +7,7 @@
 # Mohamad Moosavi 13Dec 2017
 ##################################
 
+from __future__ import print_function
 import numpy as np
 import itertools
 import time
@@ -53,11 +54,11 @@ def min_max(selected_set, nsamples, NPS, var_importance):
             distances[i] = min_dist
         extime = time.time() - prtime
         prtime = time.time()
-        print(np.argmax(distances), distances[np.argmax(distances)],
-              " execution time for current landmark: ", extime)
+        print((np.argmax(distances), distances[np.argmax(distances)],
+               " execution time for current landmark: ", extime))
         selected_indices.append(np.argmax(distances))
         selected_set.append(NPS[np.argmax(distances), :])
-    print("Total execution time of MaxMin: ", time.time() - prtime_start)
+    print(("Total execution time of MaxMin: ", time.time() - prtime_start))
     return selected_set, selected_indices
 
 
@@ -80,12 +81,12 @@ def compute(var_importance, var_LB, var_UB, num_samples=10, ngrids_per_dim=5):
         num=ngrids_per_dim,
         endpoint=True,
     )
-    print("On each dimension, we sample: ", grids_dim)
+    print(("On each dimension, we sample: ", grids_dim))
     NPS1 = itertools.product(grids_dim, repeat=num_variables)
     #NPS1=[np.array(i) for i in NPS1 if check_sample(i,var_LB,var_UB)]
     NPS1 = [np.array(i) for i in NPS1]
     NPS1 = np.asarray(NPS1)
-    print("In total, there are ", len(NPS1), "samples in the space\n")
+    print(("In total, there are ", len(NPS1), "samples in the space\n"))
 
     norm_diverse_set, sel_ind = min_max([], num_samples, NPS1, var_importance)
     print(norm_diverse_set)

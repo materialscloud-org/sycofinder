@@ -1,4 +1,6 @@
+from __future__ import print_function, division
 from sklearn.ensemble import RandomForestRegressor
+
 
 def main(input_data, var_names):
     var_names = var_names[:-1]

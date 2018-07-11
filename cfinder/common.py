@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=wrong-import-position
 from __future__ import print_function
-
+from builtins import range
+from future import standard_library
+standard_library.install_aliases()
+import urllib.request, urllib.parse, urllib.error
 import dash_html_components as html
-import urllib
 import base64
 import io
 import pandas as pd
@@ -28,7 +31,8 @@ def generate_table(dataframe, max_rows=100, download_link=False):
         link = html.A(
             'Download CSV',
             download="synthesis_conditions.csv",
-            href="data:text/csv;charset=utf-8," + urllib.quote(csv_string),
+            href="data:text/csv;charset=utf-8," +
+            urllib.parse.quote(csv_string),
             target="_blank")
         table = [table, link]
 

@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+from __future__ import division, print_function
+from builtins import zip, range
 from deap import base, creator
 import numpy as np
 import random

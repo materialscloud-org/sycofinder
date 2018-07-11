@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+from __future__ import absolute_import
 
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
@@ -51,7 +52,7 @@ def update_output(content, name, date):
     if content is None:
         return ''
 
-    from common import validate_df, parse_contents
+    from .common import validate_df, parse_contents
 
     df = parse_contents(content, name, date)
     validate_df(df)
@@ -59,7 +60,7 @@ def update_output(content, name, date):
     df_new = pd.DataFrame(new_pop, columns=variables)
     df_new['Fitness'] = ""
 
-    from common import generate_table
+    from .common import generate_table
     return generate_table(df_new, download_link=True)
     #return render_df(df_new)
 
