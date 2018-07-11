@@ -4,7 +4,7 @@ from __future__ import print_function
 import base64
 import io
 
-import dash
+from app import app
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
@@ -14,11 +14,7 @@ import pandas as pd
 
 from . import ga
 
-app = dash.Dash()
-
-app.scripts.config.serve_locally = True
-
-app.layout = html.Div([
+layout = html.Div([
     dcc.Upload(
         id='upload-data',
         children=html.Div(['Drag and Drop or ',
@@ -84,6 +80,6 @@ def update_output(content, name, date):
     return render_df(df_new)
 
 
-app.css.append_css({
-    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-})
+#app.css.append_css({
+#    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+#})

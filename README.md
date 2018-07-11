@@ -1,6 +1,10 @@
-# LSMO MaxDiv app
+# LSMO Synthesis Condition Finder
 
-Computes maximally diverse set of input parameters
+Optimize your synthesis conditions
+
+ 1. Generate a maximally diverse set of conditions
+ 1. Evolve the set of conditions based on experimentally determined fitness (using a genetic algorithm)
+ 1. Determine importance of synthesis variables
 
 ## Run locally
 

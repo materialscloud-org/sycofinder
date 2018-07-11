@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-
 from deap import base, creator
 import numpy as np
 import random
@@ -12,7 +11,7 @@ toolbox = base.Toolbox()
 ## setting up the GA ##
 
 
-# pytlin: disable=unused-argument
+# pylint: disable=unused-argument
 def evaluate(individual):
     # since we rely on experiment, to run GA we just put an arbitrary value for fitness function
     return 1.0

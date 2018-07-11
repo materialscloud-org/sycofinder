@@ -14,6 +14,7 @@ import numpy as np
 import urllib
 from . import uniform
 from . import maxmin
+from app import app
 
 # variables
 variables = collections.OrderedDict([
@@ -124,14 +125,8 @@ btn_compute = html.Div([
     html.Div('', id='compute_info')
 ])
 
-css = html.Link(rel='stylesheet', href='/static/style.css')
-
 # Creation of dash app
-app = dash.Dash(__name__, static_folder='static')
-app.scripts.config.serve_locally = True
-app.css.config.serve_locally = True
-app.layout = html.Div([
-    css,
+layout = html.Div([
     inp_nvars,
     inp_nsamples,
     controls_html,
