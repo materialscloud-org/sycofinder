@@ -19,8 +19,8 @@ app.layout = html.Div([
 home = [
     html.H2('Synthesis condition finder'),
     html.Ul([
-        html.Li(html.A('Initialize diverse set', href='/maxdiv')),
-        html.Li(html.A('Compute next generation', href='/ga')),
+        html.Li(html.A('Compute diverse set', href='/maxdiv')),
+        html.Li(html.A('Genetic Algorithm: compute next generation', href='/ga')),
         html.Li(html.A('Determine importance of variables', href='/ml')),
     ])
 ]
