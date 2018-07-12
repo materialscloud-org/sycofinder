@@ -9,4 +9,6 @@
     display: inline-block;
     margin: 0px 15px;
 }
-
+._dash-undo-redo {
+  display: none;
+}

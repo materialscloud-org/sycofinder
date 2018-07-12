@@ -20,15 +20,15 @@ variables = collections.OrderedDict([
     ('temperature',
      dict(label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
     ('r_ratio', dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0)),
-    ('power',
-     dict(label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
-    ('time', dict(label='Reaction time [min]', range=[2.0, 60.0], weight=2.0)),
+#    ('power',
+#     dict(label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
     ('h2o', dict(label='Water [ml]', range=[1.0, 6.0], weight=1.0)),
     ('dmf', dict(label='DMF [ml]', range=[1.0, 6.0], weight=1.0)),
-    ('etoh', dict(label='Ethanol [ml]', range=[1.0, 6.0], weight=1.0)),
-    ('meoh', dict(label='Methanol [ml]', range=[1.0, 6.0], weight=1.0)),
-    ('iproh', dict(
-        label='Isopropyl alcohol [ml]', range=[1.0, 6.0], weight=1.0)),
+#    ('time', dict(label='Reaction time [min]', range=[2.0, 60.0], weight=2.0)),
+#    ('etoh', dict(label='Ethanol [ml]', range=[1.0, 6.0], weight=1.0)),
+#    ('meoh', dict(label='Methanol [ml]', range=[1.0, 6.0], weight=1.0)),
+#    ('iproh', dict(
+#        label='Isopropyl alcohol [ml]', range=[1.0, 6.0], weight=1.0)),
 ])
 NVARS_DEFAULT = len(variables)
 
@@ -114,7 +114,7 @@ inp_nvars = html.Div([
 inp_nsamples = html.Div([
     html.Span('Number of samples: '),
     dcc.Input(
-        id='nsamples', type='number', value=20, className="nsamples range")
+        id='nsamples', type='number', value=10, className="nsamples range")
 ])
 
 ninps = len(label_states + low_states + high_states + weight_states) + 2
