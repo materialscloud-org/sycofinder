@@ -23,7 +23,7 @@ variables = collections.OrderedDict([
 #    ('power',
 #     dict(label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
     ('h2o', dict(label='Water [ml]', range=[1.0, 6.0], weight=1.0)),
-    ('dmf', dict(label='DMF [ml]', range=[1.0, 6.0], weight=1.0)),
+#    ('dmf', dict(label='DMF [ml]', range=[1.0, 6.0], weight=1.0)),
 #    ('time', dict(label='Reaction time [min]', range=[2.0, 60.0], weight=2.0)),
 #    ('etoh', dict(label='Ethanol [ml]', range=[1.0, 6.0], weight=1.0)),
 #    ('meoh', dict(label='Methanol [ml]', range=[1.0, 6.0], weight=1.0)),

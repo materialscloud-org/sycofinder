@@ -93,6 +93,7 @@ def muteGaussian(offspring, var_std):
         g + np.random.normal(loc=0.0, scale=std)
         for g, std in zip(offspring, var_std)
     ]
+    mutated_genes=[g if g >=0 else 0 for g in mutated_genes]
     return mutated_genes
 
 
