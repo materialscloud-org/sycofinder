@@ -14,7 +14,7 @@ from .common import HIDE, SHOW, generate_table
 
 layout = html.Div([
     dcc.Upload(
-        id='upload_data',
+        id='ga_upload',
         children=html.Div(['Drag and Drop or ',
                            html.A('Select Files')]),
         style={
@@ -28,11 +28,11 @@ layout = html.Div([
             'margin': '10px'
         },
         multiple=False),
-    html.Div(id='parsed_data', style=HIDE),
-    html.Div(id='parsed_data_table'),
+    html.Div(id='ga_parsed_data', style=HIDE),
+    html.Div(id='ga_parsed_data_table'),
     html.Div(
         [
-            html.Button('compute', id='btn_compute'),
+            html.Button('compute', id='ga_btn_compute'),
             html.Div('', id='ga_compute_info')
         ],
         id='div_compute')
@@ -40,10 +40,10 @@ layout = html.Div([
 
 
 @app.callback(
-    Output('parsed_data', 'children'), [
-        Input('upload_data', 'contents'),
-        Input('upload_data', 'filename'),
-        Input('upload_data', 'last_modified')
+    Output('ga_parsed_data', 'children'), [
+        Input('ga_upload', 'contents'),
+        Input('ga_upload', 'filename'),
+        Input('ga_upload', 'last_modified')
     ])
 def parse_data(content, name, date):
     if content is None:
@@ -57,14 +57,14 @@ def parse_data(content, name, date):
 
 
 @app.callback(
-    Output('div_compute', 'style'), [Input('parsed_data', 'children')])
+    Output('div_compute', 'style'), [Input('ga_parsed_data', 'children')])
 def show_button(json):
     if json is None:
         return HIDE
     return SHOW
 
 
-#@app.callback(Output('parsed_data_table', 'children'), [Input('parsed_data', 'children')])
+#@app.callback(Output('ga_parsed_data_table', 'children'), [Input('ga_parsed_data', 'children')])
 #def show_data(json):
 #    if json is None:
 #        return ''
@@ -72,8 +72,9 @@ def show_button(json):
 #    return generate_table(df, download_link=False)
 #
 @app.callback(
-    Output('ga_compute_info', 'children'), [Input('btn_compute', 'n_clicks')],
-    [State('parsed_data', 'children')])
+    Output('ga_compute_info',
+           'children'), [Input('ga_btn_compute', 'n_clicks')],
+    [State('ga_parsed_data', 'children')])
 # pylint: disable=unused-argument, unused-variable
 def on_compute(n_clicks, json):
     if json is None:

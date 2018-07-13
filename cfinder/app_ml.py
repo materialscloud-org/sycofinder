@@ -16,7 +16,7 @@ graph_layout = dict(autosize=False, width=600, height=600)
 
 layout = html.Div([
     dcc.Upload(
-        id='upload-data',
+        id='ml_upload',
         children=html.Div(['Drag and Drop or ',
                            html.A('Select Files')]),
         style={
@@ -31,24 +31,23 @@ layout = html.Div([
         },
         multiple=False),
     html.Div(id='ml_parsed_data', style=HIDE),
-    html.Div(id='ml_parsed_data_table'),
+    #html.Div(id='ml_parsed_data_table'),
     html.Div(
         [
-            html.Button('compute', id='btn_compute'),
+            html.Button('compute', id='ml_btn_compute'),
             dcc.Graph(
-                id='bar-chart', figure=dict(layout=graph_layout, data=[])),
-            html.Div('', id='ga_compute_info')
+                id='bar_chart', figure=dict(layout=graph_layout, data=[])),
+            #html.Div('', id='ml_compute_info')
         ],
-        id='ml_div_compute',
-        style=HIDE)
+        id='ml_div_compute')
 ])
 
 
 @app.callback(
     Output('ml_parsed_data', 'children'), [
-        Input('upload-data', 'contents'),
-        Input('upload-data', 'filename'),
-        Input('upload-data', 'last_modified')
+        Input('ml_upload', 'contents'),
+        Input('ml_upload', 'filename'),
+        Input('ml_upload', 'last_modified')
     ])
 def update_output(content, name, date):
     if content is None:
@@ -68,13 +67,15 @@ def show_button(json):
         return HIDE
     return SHOW
 
+
 # pylint: disable=unused-argument
 @app.callback(
-    Output('bar-chart', 'figure'), [Input('btn_compute', 'n_clicks')],
+    Output('bar_chart', 'figure'), [Input('ml_btn_compute', 'n_clicks')],
     [State('ml_parsed_data', 'children')])
 def on_compute(n_clicks, json):
     if json is None:
-        return
+        return dict(layout=graph_layout, data=[])
+
     df = pd.read_json(json, orient='split')
     var_imp = ml.main(input_data=df.values, var_names=list(df))
 
