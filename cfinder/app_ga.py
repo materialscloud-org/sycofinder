@@ -76,6 +76,8 @@ def show_button(json):
     [State('parsed_data', 'children')])
 # pylint: disable=unused-argument, unused-variable
 def on_compute(n_clicks, json):
+    if json is None:
+        return
     df = pd.read_json(json, orient='split')
 
     new_pop, variables = ga.main(input_data=df.values, var_names=list(df))

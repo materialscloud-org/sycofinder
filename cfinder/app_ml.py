@@ -73,6 +73,8 @@ def show_button(json):
     Output('bar-chart', 'figure'), [Input('btn_compute', 'n_clicks')],
     [State('ml_parsed_data', 'children')])
 def on_compute(n_clicks, json):
+    if json is None:
+        return
     df = pd.read_json(json, orient='split')
     var_imp = ml.main(input_data=df.values, var_names=list(df))
 
