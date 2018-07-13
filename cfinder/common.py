@@ -83,10 +83,7 @@ def validate_df(df):
         raise ValueError("Last column needs to be 'fitness', got {}".format(
             row_titles[-1]))
 
-    if not set(df.dtypes.values) < set(
-        [np.dtype('float64'), np.dtype('int64')]):
-        raise ValueError(
-            "All values must be floats, got data tpes\n {}".format(df.dtypes))
+    return df.astype(dtype="float64")
 
 
 # styles
