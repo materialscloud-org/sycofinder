@@ -6,6 +6,9 @@ from dash.dependencies import Input, Output
 
 from cfinder import app, app_maxdiv, app_ga, app_ml
 
+title = 'Synthesis Condition Finder'
+
+app.title = title
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Link(rel='stylesheet', href='/static/style.css'),
@@ -17,10 +20,11 @@ app.layout = html.Div([
 ])
 
 home = [
-    html.H2('Synthesis condition finder'),
+    html.H2(title),
     html.Ul([
         html.Li(html.A('Compute diverse set', href='/maxdiv')),
-        html.Li(html.A('Genetic Algorithm: compute next generation', href='/ga')),
+        html.Li(
+            html.A('Genetic Algorithm: compute next generation', href='/ga')),
         html.Li(html.A('Determine importance of variables', href='/ml')),
     ])
 ]

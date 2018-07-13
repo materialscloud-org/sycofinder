@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 from cfinder import app
 
 import plotly.graph_objs as go
+import pandas as pd
 
 from . import ml
+from .common import HIDE, SHOW
 
 graph_layout = dict(autosize=False, width=600, height=600)
 
@@ -27,30 +29,51 @@ layout = html.Div([
             'textAlign': 'center',
             'margin': '10px'
         },
-        # Allow multiple files to be uploaded
         multiple=False),
-    #html.Div(id='ml-output-data-upload'),
+    html.Div(id='ml_parsed_data', style=HIDE),
+    html.Div(id='ml_parsed_data_table'),
     html.Div(
-        dcc.Graph(id='bar-chart', figure=dict(layout=graph_layout, data=[]))),
-    #html.Div(dt.DataTable(rows=[{}]), style={'display': 'none'})
+        [
+            html.Button('compute', id='btn_compute'),
+            dcc.Graph(
+                id='bar-chart', figure=dict(layout=graph_layout, data=[])),
+            html.Div('', id='ga_compute_info')
+        ],
+        id='ml_div_compute',
+        style=HIDE)
 ])
 
 
 @app.callback(
-    Output('bar-chart', 'figure'), [
+    Output('ml_parsed_data', 'children'), [
         Input('upload-data', 'contents'),
         Input('upload-data', 'filename'),
         Input('upload-data', 'last_modified')
     ])
 def update_output(content, name, date):
     if content is None:
-        return dict(data=[])
+        return ''
 
     from .common import validate_df, parse_contents
 
     df = parse_contents(content, name, date)
     validate_df(df)
+    return df.to_json(date_format='iso', orient='split')
 
+
+@app.callback(
+    Output('ml_div_compute', 'style'), [Input('ml_parsed_data', 'children')])
+def show_button(json):
+    if json is None:
+        return HIDE
+    return SHOW
+
+# pylint: disable=unused-argument
+@app.callback(
+    Output('bar-chart', 'figure'), [Input('btn_compute', 'n_clicks')],
+    [State('ml_parsed_data', 'children')])
+def on_compute(n_clicks, json):
+    df = pd.read_json(json, orient='split')
     var_imp = ml.main(input_data=df.values, var_names=list(df))
 
     #marker = dict(size=10, line=dict(width=2), color=clrs, colorscale=colorscale, colorbar=colorbar)

@@ -2,19 +2,19 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_table_experiments as dt
 from cfinder import app
 
 import pandas as pd
 
 from . import ga
+from .common import HIDE, SHOW, generate_table
 
 layout = html.Div([
     dcc.Upload(
-        id='upload-data',
+        id='upload_data',
         children=html.Div(['Drag and Drop or ',
                            html.A('Select Files')]),
         style={
@@ -27,28 +27,25 @@ layout = html.Div([
             'textAlign': 'center',
             'margin': '10px'
         },
-        # Allow multiple files to be uploaded
         multiple=False),
-    html.Div(id='output-data-upload'),
-    #html.Div(dt.DataTable(rows=[{}]), style={'display': 'none'})
+    html.Div(id='parsed_data', style=HIDE),
+    html.Div(id='parsed_data_table'),
+    html.Div(
+        [
+            html.Button('compute', id='btn_compute'),
+            html.Div('', id='ga_compute_info')
+        ],
+        id='div_compute')
 ])
 
 
-def render_df(df):
-    return html.Div([
-        # Use the DataTable prototype component:
-        # github.com/plotly/dash-table-experiments
-        dt.DataTable(rows=df.to_dict('records')),
-    ])
-
-
 @app.callback(
-    Output('output-data-upload', 'children'), [
-        Input('upload-data', 'contents'),
-        Input('upload-data', 'filename'),
-        Input('upload-data', 'last_modified')
+    Output('parsed_data', 'children'), [
+        Input('upload_data', 'contents'),
+        Input('upload_data', 'filename'),
+        Input('upload_data', 'last_modified')
     ])
-def update_output(content, name, date):
+def parse_data(content, name, date):
     if content is None:
         return ''
 
@@ -56,15 +53,33 @@ def update_output(content, name, date):
 
     df = parse_contents(content, name, date)
     validate_df(df)
+    return df.to_json(date_format='iso', orient='split')
+
+
+@app.callback(
+    Output('div_compute', 'style'), [Input('parsed_data', 'children')])
+def show_button(json):
+    if json is None:
+        return HIDE
+    return SHOW
+
+
+#@app.callback(Output('parsed_data_table', 'children'), [Input('parsed_data', 'children')])
+#def show_data(json):
+#    if json is None:
+#        return ''
+#    df = pd.read_json(json, orient='split')
+#    return generate_table(df, download_link=False)
+#
+@app.callback(
+    Output('ga_compute_info', 'children'), [Input('btn_compute', 'n_clicks')],
+    [State('parsed_data', 'children')])
+# pylint: disable=unused-argument, unused-variable
+def on_compute(n_clicks, json):
+    df = pd.read_json(json, orient='split')
+
     new_pop, variables = ga.main(input_data=df.values, var_names=list(df))
     df_new = pd.DataFrame(new_pop, columns=variables)
     df_new['Fitness'] = ""
 
-    from .common import generate_table
     return generate_table(df_new, download_link=True)
-    #return render_df(df_new)
-
-
-#app.css.append_css({
-#    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-#})
