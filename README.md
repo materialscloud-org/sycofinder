@@ -20,4 +20,3 @@ python run.py
 ./run-docker.sh
 # nagivate to localhost:8050
 ```
-
