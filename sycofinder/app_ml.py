@@ -4,7 +4,7 @@ from __future__ import print_function, absolute_import
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
-from cfinder import app
+from . import app
 
 import plotly.graph_objs as go
 import pandas as pd

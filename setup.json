@@ -1,9 +1,9 @@
 {
-    "name": "cfinder",
+    "name": "sycofinder",
     "author": "Leopold Talirz",
     "author_email": "leopold.talirz@gmail.com",
-    "description": "Web App for computing diverse set of parameters in given variable space.",
-    "url": "https://github.com/ltalirz/https://github.com/ltalirz/lsmo-maxdiv-app",
+    "description": "Web App for finding and optimizing synthesis conditions for nanoporous materials.",
+    "url": "https://github.com/ltalirz/https://github.com/ltalirz/sycofinder",
     "license": "MIT",
     "classifiers": [
         "Programming Language :: Python"

@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
-from cfinder import app
+from . import app
 
 import pandas as pd
 
