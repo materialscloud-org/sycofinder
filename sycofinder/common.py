@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=wrong-import-position,import-error,multiple-imports
 from __future__ import print_function
-from builtins import range
+from builtins import range  # pylint: disable=redefined-builtins
 from future import standard_library
 standard_library.install_aliases()
 import urllib.request, urllib.parse, urllib.error

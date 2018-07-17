@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 from __future__ import division, print_function
-from builtins import zip, range
+from builtins import zip, range  # pylint: disable=redefined-builtins
 from deap import base, creator
 import numpy as np
 import random
@@ -93,7 +93,7 @@ def muteGaussian(offspring, var_std):
         g + np.random.normal(loc=0.0, scale=std)
         for g, std in zip(offspring, var_std)
     ]
-    mutated_genes=[g if g >=0 else 0 for g in mutated_genes]
+    mutated_genes = [g if g >= 0 else 0 for g in mutated_genes]
     return mutated_genes
 
 

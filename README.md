@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/139702936.svg)](https://zenodo.org/badge/latestdoi/139702936)
+
 # LSMO Synthesis Condition Finder
 
 Optimize your synthesis conditions
@@ -20,4 +22,3 @@ python run.py
 ./run-docker.sh
 # nagivate to localhost:8050
 ```
-

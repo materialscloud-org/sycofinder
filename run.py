@@ -4,7 +4,7 @@ import dash_html_components as html
 #import dash_table_experiments as dt
 from dash.dependencies import Input, Output
 
-from cfinder import app, app_maxdiv, app_ga, app_ml
+from sycofinder import app, app_maxdiv, app_ga, app_ml
 
 title = 'Synthesis Condition Finder'
 
