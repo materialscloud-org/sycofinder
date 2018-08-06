@@ -27,9 +27,8 @@ RUN pip install --upgrade pip
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /home/app
-COPY maxdiv/ ./maxdiv
+COPY sycofinder/ ./sycofinder
 COPY README.md setup.py setup.json run.py  ./
-# pymc: numpy already required at build time
 RUN pip install -e .
 
 # from now on run as user app, provided by passenger
