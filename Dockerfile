@@ -2,7 +2,7 @@
 # See http://phusion.github.io/baseimage-docker/ for info in phusion
 # See https://github.com/phusion/baseimage-docker/releases
 # for the latest releases
-FROM phusion/passenger-customizable:0.9.34
+FROM phusion/passenger-customizable:1.0.1
 
 MAINTAINER Leopold Talirz <leopold.talirz@gmail.com>
 
@@ -28,6 +28,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /home/app
 COPY sycofinder/ ./sycofinder
+COPY static/ ./static
 COPY README.md setup.py setup.json run.py  ./
 RUN pip install -e .
 
