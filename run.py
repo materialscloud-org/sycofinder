@@ -32,21 +32,21 @@ app.layout = html.Div([
 home = [
     html.H2(title),
     html.Ul([
-        html.Li(html.A('Compute diverse set', href='/maxdiv')),
+        html.Li(html.A('Compute diverse set', href='maxdiv/')),
         html.Li(
-            html.A('Genetic Algorithm: compute next generation', href='/ga')),
-        html.Li(html.A('Determine importance of variables', href='/ml')),
+            html.A('Genetic Algorithm: compute next generation', href='ga/')),
+        html.Li(html.A('Determine importance of variables', href='ml/')),
     ])
 ]
 
 
 @app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/maxdiv':
+    if pathname.endswith('/maxdiv/'):
         return app_maxdiv.layout
-    elif pathname == '/ga':
+    elif pathname.endswith('/ga/'):
         return app_ga.layout
-    elif pathname == '/ml':
+    elif pathname.endswith('/ml/'):
         return app_ml.layout
     return home
 
