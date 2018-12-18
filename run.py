@@ -6,6 +6,16 @@ from dash.dependencies import Input, Output
 
 from sycofinder import app, app_maxdiv, app_ga, app_ml
 
+# See https://community.plot.ly/t/deploy-dash-on-apache-server-solved/4855/18
+#app.config.update({
+#    # as the proxy server will remove the prefix
+#    'routes_pathname_prefix': '/',
+#
+#    # the front-end will prefix this string to the requests
+#    # that are made to the proxy server
+#    'requests_pathname_prefix': '/sycofinder/'
+#})
+
 title = 'Synthesis Condition Finder'
 
 app.title = title
