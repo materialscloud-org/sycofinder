@@ -6,23 +6,13 @@ from dash.dependencies import Input, Output
 
 from sycofinder import app, app_maxdiv, app_ga, app_ml
 
-# See https://community.plot.ly/t/deploy-dash-on-apache-server-solved/4855/18
-app.config.update({
-    # as the proxy server will remove the prefix
-    'routes_pathname_prefix': '/',
-
-    # the front-end will prefix this string to the requests
-    # that are made to the proxy server
-    'requests_pathname_prefix': '/sycofinder/'
-})
-
 title = 'Synthesis Condition Finder'
 
 app.title = title
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
-    html.Link(rel='stylesheet', href='/static/style.css'),
-    html.Link(rel='stylesheet', href='/static/upload.css'),
+    #html.Link(rel='stylesheet', href='/static/style.css'),
+    #html.Link(rel='stylesheet', href='/static/upload.css'),
     html.Div(id='page-content'),
     ## work around plot.ly dash design flaw
     ## https://community.plot.ly/t/display-tables-in-dash/4707/40
@@ -42,6 +32,9 @@ home = [
 
 @app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
 def display_page(pathname):
+    if pathname is None:
+        return home
+
     if pathname.endswith('/maxdiv/'):
         return app_maxdiv.layout
     elif pathname.endswith('/ga/'):
@@ -52,5 +45,16 @@ def display_page(pathname):
 
 
 if __name__ == '__main__':
+
+    # See https://community.plot.ly/t/deploy-dash-on-apache-server-solved/4855/18
+    #app.config.update({
+    #    # as the proxy server will remove the prefix
+    #    'routes_pathname_prefix': '/',
+
+    #    # the front-end will prefix this string to the requests
+    #    # that are made to the proxy server
+    #    'requests_pathname_prefix': '/sycofinder/'
+    #})
+
     app.run_server(debug=True, host='0.0.0.0')
     #app.run_server()
