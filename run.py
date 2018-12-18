@@ -47,14 +47,14 @@ def display_page(pathname):
 if __name__ == '__main__':
 
     # See https://community.plot.ly/t/deploy-dash-on-apache-server-solved/4855/18
-    #app.config.update({
-    #    # as the proxy server will remove the prefix
-    #    'routes_pathname_prefix': '/',
+    app.config.update({
+        # as the proxy server will remove the prefix
+        'routes_pathname_prefix': '/',
 
-    #    # the front-end will prefix this string to the requests
-    #    # that are made to the proxy server
-    #    'requests_pathname_prefix': '/sycofinder/'
-    #})
+        # the front-end will prefix this string to the requests
+        # that are made to the proxy server
+        'requests_pathname_prefix': '/sycofinder/'
+    })
 
     app.run_server(debug=True, host='0.0.0.0')
     #app.run_server()
