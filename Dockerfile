@@ -28,7 +28,6 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /home/app
 COPY sycofinder/ ./sycofinder
-COPY static/ ./static
 COPY README.md setup.py setup.json run.py  ./
 RUN pip install -e .
 
