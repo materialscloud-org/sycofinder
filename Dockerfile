@@ -28,7 +28,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /home/app
 COPY sycofinder/ ./sycofinder
-COPY README.md setup.py setup.json run.py  ./
+COPY README.md setup.py setup.json run-proxy.py  ./
 RUN pip install -e .
 
 # from now on run as user app, provided by passenger
@@ -40,5 +40,5 @@ EXPOSE 8050
 
 # Use baseimage-docker's init system.
 #CMD ["/sbin/my_init"]
-CMD ["python", "run.py"]
+CMD ["python", "run-proxy.py"]
 
