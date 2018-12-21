@@ -7,7 +7,21 @@ import dash_core_components as dcc
 app = dash.Dash(
     __name__,
     url_base_pathname='/sycofinder/',
-    assets_url_path='/sycofinder/assets')
+    assets_url_path='/sycofinder/assets',
+    meta_tags=[
+        {
+            'charset': 'utf-8',
+        },
+        {
+            'http-equiv': 'X-UA-Compatible',
+            'content': 'IE=edge'
+        },
+        # needed for iframe resizer
+        {
+            'name': 'viewport',
+            'content': 'width=device-width, initial-scale=1'
+        },
+    ])
 server = app.server
 app.config.suppress_callback_exceptions = True
 app.scripts.config.serve_locally = True
