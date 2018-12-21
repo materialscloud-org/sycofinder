@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Run app behind proxy server"""
+import sys
+sys.path.insert(0, '/home/app')
 
 from sycofinder import app, app_home, app_maxdiv, app_ga, app_ml
 import dash.dependencies as dep
@@ -20,15 +22,18 @@ def display_page(pathname):
     return app_home.layout
 
 
-if __name__ == '__main__':
-    # See https://community.plot.ly/t/deploy-dash-on-apache-server-solved/4855/18
-    app.config.update({
-        # as the proxy server will remove the prefix
-        'routes_pathname_prefix': '/',
+## See https://community.plot.ly/t/deploy-dash-on-apache-server-solved/4855/18
+#app.config.update({
+#    # as the proxy server will remove the prefix
+#    'routes_pathname_prefix': '/',
+#
+#    # the front-end will prefix this string to the requests
+#    # that are made to the proxy server
+#    'requests_pathname_prefix': '/sycofinder/'
+#})
 
-        # the front-end will prefix this string to the requests
-        # that are made to the proxy server
-        'requests_pathname_prefix': '/sycofinder/'
-    })
+# app.server containes the Flask app
+# See https://dash.plot.ly/deployment
+application = app.server
 
-    app.run_server(host='0.0.0.0')
+#app.run_server(host='0.0.0.0')

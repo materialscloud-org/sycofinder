@@ -1,44 +1,72 @@
-### Docker base specific
+### Dockerfile for SyCoFinder
+# Based on https://github.com/materialscloud-org/tools-barebone/Dockerfile
 # See http://phusion.github.io/baseimage-docker/ for info in phusion
-# See https://github.com/phusion/baseimage-docker/releases
+# See https://hub.docker.com/r/phusion/passenger-customizable
 # for the latest releases
 FROM phusion/passenger-customizable:1.0.1
 
 MAINTAINER Leopold Talirz <leopold.talirz@gmail.com>
 
-
 # If you're using the 'customizable' variant, you need to explicitly opt-in
 # for features. Uncomment the features you want:
 #
 #   Build system and git.
-#   Python support (2.7 and 3.x - it is 3.5.x in this ubuntu 16.04)
 RUN /pd_build/utilities.sh && \
     /pd_build/python.sh 
 
 ### Installation
-RUN apt-get update
+RUN apt-get update \
+    && apt-get -y install \
+    python3-pip \
+    apache2 \
+    libapache2-mod-wsgi-py3 \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean all
 
-RUN apt-get -y install python-pip
-RUN pip install --upgrade pip
+# Setup apache
+# enable wsgi module, disable default apache site, enable our site
+ADD ./.apache/apache-site.conf /etc/apache2/sites-available/app.conf
+RUN a2enmod wsgi && \
+    a2dissite 000-default && a2ensite app
+
+# Activate apache at startup
+RUN mkdir /etc/service/apache
+RUN mkdir /var/run/apache2
+ADD ./.apache/apache_run.sh /etc/service/apache/run
+
+# Run this as root to replace the version of pip
+RUN pip3 install --upgrade pip setuptools wheel
+
 ## pymc build requirements: gfortran, liblapack-dev, numpy
 #RUN apt-get -y install python-pip gfortran liblapack-dev
 #RUN pip install --upgrade pip numpy 
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-WORKDIR /home/app
-COPY sycofinder/ ./sycofinder
-COPY README.md setup.py setup.json run-proxy.py  ./
-RUN pip install -e .
-
 # from now on run as user app, provided by passenger
-RUN chown -R app:app /home/app
 USER app
+ENV HOME /home/app
+WORKDIR /home/app
 
-# expose default dash port
-EXPOSE 8050
+# Add wsgi file for app
+COPY ./.apache/app.wsgi app.wsgi
+## Create a proper wsgi file file
+#ENV SP_WSGI_FILE=webservice/app.wsgi
+#RUN echo "import sys" > $SP_WSGI_FILE && \
+#    echo "sys.path.insert(0, '/home/app/code/webservice')" >> $SP_WSGI_FILE && \
+#    echo "from run_app import app as application" >> $SP_WSGI_FILE
+#
+
+COPY sycofinder/ ./sycofinder
+COPY README.md setup.py setup.json  ./
+RUN pip3 install --user -e . --no-warn-script-location
+
+# go back to root user for startup
+USER root
+RUN chown -R app:app /home/app
+
+## expose default dash port
+#EXPOSE 8050
+EXPOSE 80
 
 # Use baseimage-docker's init system.
-#CMD ["/sbin/my_init"]
-CMD ["python", "run-proxy.py"]
-
+CMD ["/sbin/my_init"]
+#CMD ["python", "run-proxy.py"]

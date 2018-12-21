@@ -1,1 +1,1 @@
-docker run -p 8050:8050 lsmo-maxdiv-dash:latest 
+docker run -p 8050:80 lsmo-maxdiv-dash:latest 
