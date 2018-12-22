@@ -14,33 +14,37 @@ from .common import HIDE, SHOW
 
 graph_layout = dict(autosize=False, width=600, height=600)
 
-layout = html.Div([
-    dcc.Upload(
-        id='ml_upload',
-        children=html.Div(['Drag and Drop or ',
-                           html.A('Select Files')]),
-        style={
-            'width': '100%',
-            'height': '60px',
-            'lineHeight': '60px',
-            'borderWidth': '1px',
-            'borderStyle': 'dashed',
-            'borderRadius': '5px',
-            'textAlign': 'center',
-            'margin': '10px'
-        },
-        multiple=False),
-    html.Div(id='ml_parsed_data', style=HIDE),
-    #html.Div(id='ml_parsed_data_table'),
-    html.Div(
-        [
-            html.Button('compute', id='ml_btn_compute'),
-            dcc.Graph(
-                id='bar_chart', figure=dict(layout=graph_layout, data=[])),
-            #html.Div('', id='ml_compute_info')
-        ],
-        id='ml_div_compute')
-])
+layout = html.Div(
+    [
+        dcc.Upload(
+            id='ml_upload',
+            children=html.Div(['Drag and Drop or ',
+                               html.A('Select Files')]),
+            style={
+                'width': '100%',
+                'height': '60px',
+                'lineHeight': '60px',
+                'borderWidth': '1px',
+                'borderStyle': 'dashed',
+                'borderRadius': '5px',
+                'textAlign': 'center',
+                'margin': '10px'
+            },
+            multiple=False),
+        html.Div(id='ml_parsed_data', style=HIDE),
+        #html.Div(id='ml_parsed_data_table'),
+        html.Div(
+            [
+                html.Button('compute', id='ml_btn_compute'),
+                dcc.Graph(
+                    id='bar_chart', figure=dict(layout=graph_layout, data=[])),
+                #html.Div('', id='ml_compute_info')
+            ],
+            id='ml_div_compute')
+    ],
+    # tag for iframe resizer
+    **{'data-iframe-height': ''},
+)
 
 
 @app.callback(

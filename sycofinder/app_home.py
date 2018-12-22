@@ -27,5 +27,8 @@ chemical intuition for the synthesis of novel materials.
                     html.A('Determine importance of variables', href='ml/')),
             ]),
         ],
-        id="container")
+        id="container",
+        # tag for iframe resizer
+        **{'data-iframe-height': ''},
+    )
 ]

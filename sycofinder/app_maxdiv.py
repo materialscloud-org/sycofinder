@@ -17,8 +17,8 @@ from . import app
 
 # variables
 variables = collections.OrderedDict([
-    ('temperature',
-     dict(label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
+    ('temperature', dict(
+        label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
     ('r_ratio', dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0)),
     #    ('power',
     #     dict(label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
@@ -125,14 +125,18 @@ btn_compute = html.Div([
 ])
 
 # Creation of dash app
-layout = html.Div([
-    inp_nvars,
-    inp_nsamples,
-    controls_html,
-    btn_compute,
-    #graph, hover_info,
-    #click_info
-])
+layout = html.Div(
+    [
+        inp_nvars,
+        inp_nsamples,
+        controls_html,
+        btn_compute,
+        #graph, hover_info,
+        #click_info
+    ],
+    # tag for iframe resizer
+    **{'data-iframe-height': ''},
+)
 
 # Use custom CSS
 # app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
