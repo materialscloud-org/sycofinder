@@ -42,6 +42,7 @@ layout = html.Div(
             ],
             id='ml_div_compute')
     ],
+    id="container",
     # tag for iframe resizer
     **{'data-iframe-height': ''},
 )

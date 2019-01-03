@@ -12,3 +12,22 @@
 ._dash-undo-redo {
   display: none;
 }
+
+div.sycolinks a, div.sycolinks li {
+  font-weight: bold;
+}
+
+img.sycoschema {
+  margin: auto;
+  width: 300px;
+  padding: 15px;
+  vertical-align: middle;
+}
+
+img.sycologo {
+  margin: auto;
+  width: 150px;
+  padding: 30px;
+  vertical-align: middle;
+}
+

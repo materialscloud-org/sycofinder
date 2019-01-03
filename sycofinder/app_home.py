@@ -1,31 +1,54 @@
 import dash_html_components as html
 from . import app
 
+about = """
+SyCoFinder was designed to aid experiments in order to efficiently explore the
+chemical space involved in the synthesis of metal-organic frameworks.
+
+The first component of the app generates a diverse set of synthesis conditions
+in the chemical space defined by the user (potentially already including chemical
+intuition by assigning variable importance).
+
+Users then perform experiments, recording the fitness of the samples obtained
+(fitness scores are user specific, higher is better).  These records are fed
+into the second component of the app, which optimizes the synthesis conditions
+using a genetic algorithm.
+
+Finally, the complete set of experiments and fitness records can be used to determine
+the importance of experimental variables using a machine learning algorithm.
+"""
+
+about_html = [html.P(i) for i in about.split("\n\n")]
+
 layout = [
     html.Div(
         [
             html.Div(html.H1(app.title), id="maintitle"),
             html.H2("About"),
-            html.P("""
-We report a methodology using machine learning to capture chemical intuition
-from a set of (partially) failed attempts to synthesize a metal organic
-framework. We define chemical intuition as the collection of unwritten
-guidelines used by synthetic chemists to find the right synthesis conditions.
-As (partially) failed experiments usually remain unreported, we have
-reconstructed a typical track of failed experiments in a successful search for
-finding the optimal synthesis conditions that yields HKUST-1 with the highest
-surface area reported to date. We illustrate the importance of quantifying this
-chemical intuition for the synthesis of novel materials.
-"""),
-            html.Ul([
-                html.Li(html.A('Compute diverse set', href='maxdiv/')),
-                html.Li(
-                    html.A(
-                        'Genetic Algorithm: compute next generation',
-                        href='ga/')),
-                html.Li(
-                    html.A('Determine importance of variables', href='ml/')),
-            ]),
+            html.Img(src="assets/images/logo.png", className="sycologo"),
+            html.Img(src="assets/images/schema.png", className="sycoschema"),
+            html.Div(
+                about_html + [
+                    html.P(
+                        html.A(
+                            html.B("Watch the tutorial on Youtube"),
+                            href='https://youtu.be/xyEUfw2F4Ck',
+                            target='_blank')),
+                ],
+                className="info-container"),
+            html.H2("Steps"),
+            html.Div(
+                html.Ol([
+                    html.Li(html.A('Compute diverse set', href='maxdiv/')),
+                    html.Li(
+                        html.A(
+                            'Genetic Algorithm: compute next generation',
+                            href='ga/')),
+                    html.Li(
+                        html.A(
+                            'Determine importance of variables', href='ml/')),
+                ]),
+                className="sycolinks"),
         ],
         id="container",
         # tag for iframe resizer

@@ -134,6 +134,7 @@ layout = html.Div(
         #graph, hover_info,
         #click_info
     ],
+    id="container",
     # tag for iframe resizer
     **{'data-iframe-height': ''},
 )
