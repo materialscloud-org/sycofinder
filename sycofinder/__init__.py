@@ -3,11 +3,14 @@ import dash
 import dash_html_components as html
 import dash_core_components as dcc
 
+#app_prefix = '/sycofinder'
+app_prefix = ''
+
 #app = dash.Dash(__name__)
 app = dash.Dash(
     __name__,
-    url_base_pathname='/sycofinder/',
-    assets_url_path='/sycofinder/assets',
+    url_base_pathname=app_prefix + '/',
+    assets_url_path=app_prefix + '/assets',
     meta_tags=[
         {
             'charset': 'utf-8',

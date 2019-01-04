@@ -20,5 +20,5 @@ python run.py
 ```
 ./build-docker.sh
 ./run-docker.sh
-# open http://localhost:8050/sycofinder/
+# open http://localhost:8050
 ```
