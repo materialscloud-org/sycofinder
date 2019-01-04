@@ -48,12 +48,6 @@ WORKDIR /home/app
 
 # Add wsgi file for app
 COPY ./.apache/app.wsgi app.wsgi
-## Create a proper wsgi file file
-#ENV SP_WSGI_FILE=webservice/app.wsgi
-#RUN echo "import sys" > $SP_WSGI_FILE && \
-#    echo "sys.path.insert(0, '/home/app/code/webservice')" >> $SP_WSGI_FILE && \
-#    echo "from run_app import app as application" >> $SP_WSGI_FILE
-#
 
 COPY sycofinder/ ./sycofinder
 COPY README.md setup.py setup.json  ./
@@ -63,10 +57,10 @@ RUN pip3 install --user -e . --no-warn-script-location
 USER root
 RUN chown -R app:app /home/app
 
-## expose default dash port
+## run dash server
 #EXPOSE 8050
-EXPOSE 80
-
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
 #CMD ["python", "run-proxy.py"]
+
+# run apache server (via baseimage-docker's init system)
+EXPOSE 80
+CMD ["/sbin/my_init"]

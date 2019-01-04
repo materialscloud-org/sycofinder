@@ -32,7 +32,7 @@ layout = [
                     html.P(
                         html.A(
                             html.B("Watch the tutorial on Youtube"),
-                            href='https://youtu.be/xyEUfw2F4Ck',
+                            href='https://youtu.be/i8i4HmEEw4Y',
                             target='_blank')),
                 ],
                 className="info-container"),
