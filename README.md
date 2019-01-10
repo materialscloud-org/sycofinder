@@ -8,6 +8,8 @@ Optimize your synthesis conditions
  1. Evolve the set of conditions based on experimentally determined fitness (using a genetic algorithm)
  1. Determine importance of synthesis variables
 
+[Try it live](https://www.materialscloud.org/work/tools/sycofinder)
+
 ## Run locally
 
 ```
