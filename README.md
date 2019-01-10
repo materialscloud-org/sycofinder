@@ -13,6 +13,7 @@ Optimize your synthesis conditions
 ```
 pip install -e .
 python run.py
+# open http://0.0.0.0:8050/
 ```
 
 ## Run inside docker container
