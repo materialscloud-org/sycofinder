@@ -19,7 +19,7 @@ the importance of experimental variables using a machine learning algorithm.
 """
 
 changelog = [
-    ["v0.1.1", "reduce max number of variables to 6"],
+    ["v0.1.1", "reduce max number of variables to 5"],
     ["v0.1.0", "release on Materials Cloud"],
 ]
 
