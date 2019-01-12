@@ -18,6 +18,11 @@ Finally, the complete set of experiments and fitness records can be used to dete
 the importance of experimental variables using a machine learning algorithm.
 """
 
+changelog = [
+    ["v0.1.1", "reduce max number of variables to 6"],
+    ["v0.1.0", "release on Materials Cloud"],
+]
+
 about_html = [html.P(i) for i in about.split("\n\n")]
 
 layout = [
@@ -49,6 +54,10 @@ layout = [
                             'Determine importance of variables', href='ml/')),
                 ]),
                 className="sycolinks"),
+            html.H2("Changelog"),
+            html.Ul([
+                html.Li([html.B(k + " "), html.Span(v)]) for k, v in changelog
+            ]),
         ],
         id="container",
         # tag for iframe resizer
