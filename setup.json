@@ -3,13 +3,12 @@
     "author": "Leopold Talirz, Seyed Mohamad Moosavi",
     "author_email": "leopold.talirz@gmail.com",
     "description": "Web App for finding and optimizing synthesis conditions for nanoporous materials.",
-    "url": "https://github.com/ltalirz/https://github.com/ltalirz/sycofinder",
+    "url": "https://github.com/ltalirz/sycofinder",
     "license": "MIT",
     "classifiers": [
         "Programming Language :: Python"
     ],
     "version": "0.1.1",
-    "setup_requires": ["numpy"],
     "install_requires": [
         "future",
         "dash",
