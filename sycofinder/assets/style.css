@@ -1,0 +1,33 @@
+.slider { 
+    width: 50px;
+    display: inline-block;
+    margin: 0px 15px;
+}
+
+.range { 
+    width: 75px;
+    display: inline-block;
+    margin: 0px 15px;
+}
+._dash-undo-redo {
+  display: none;
+}
+
+div.sycolinks a, div.sycolinks li {
+  font-weight: bold;
+}
+
+img.sycoschema {
+  margin: auto;
+  width: 300px;
+  padding: 15px;
+  vertical-align: middle;
+}
+
+img.sycologo {
+  margin: auto;
+  width: 150px;
+  padding: 30px;
+  vertical-align: middle;
+}
+

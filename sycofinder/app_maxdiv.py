@@ -17,8 +17,8 @@ from . import app
 
 # variables
 variables = collections.OrderedDict([
-    ('temperature',
-     dict(label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
+    ('temperature', dict(
+        label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
     ('r_ratio', dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0)),
     #    ('power',
     #     dict(label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
@@ -33,7 +33,8 @@ variables = collections.OrderedDict([
 NVARS_DEFAULT = len(variables)
 
 # Fill up to NVARS_MAX (needed to define callbacks)
-NVARS_MAX = 20
+# Note: In the current implementation, anything beyond 6 takes too much time
+NVARS_MAX = 5
 for i in range(len(variables), NVARS_MAX):
     k = 'variable_{}'.format(i + 1)
     variables[k] = dict(label=k, range=[0, 1], weight=1)
@@ -125,14 +126,19 @@ btn_compute = html.Div([
 ])
 
 # Creation of dash app
-layout = html.Div([
-    inp_nvars,
-    inp_nsamples,
-    controls_html,
-    btn_compute,
-    #graph, hover_info,
-    #click_info
-])
+layout = html.Div(
+    [
+        inp_nvars,
+        inp_nsamples,
+        controls_html,
+        btn_compute,
+        #graph, hover_info,
+        #click_info
+    ],
+    id="container",
+    # tag for iframe resizer
+    **{'data-iframe-height': ''},
+)
 
 # Use custom CSS
 # app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})

@@ -1,46 +1,22 @@
 # -*- coding: utf-8 -*-
-import dash_core_components as dcc
-import dash_html_components as html
-#import dash_table_experiments as dt
-from dash.dependencies import Input, Output
-
-from sycofinder import app, app_maxdiv, app_ga, app_ml
-
-title = 'Synthesis Condition Finder'
-
-app.title = title
-app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    html.Link(rel='stylesheet', href='/static/style.css'),
-    html.Link(rel='stylesheet', href='/static/upload.css'),
-    html.Div(id='page-content'),
-    ## work around plot.ly dash design flaw
-    ## https://community.plot.ly/t/display-tables-in-dash/4707/40
-    #html.Div(dt.DataTable(rows=[{}]), style={'display': 'none'})
-])
-
-home = [
-    html.H2(title),
-    html.Ul([
-        html.Li(html.A('Compute diverse set', href='/maxdiv')),
-        html.Li(
-            html.A('Genetic Algorithm: compute next generation', href='/ga')),
-        html.Li(html.A('Determine importance of variables', href='/ml')),
-    ])
-]
+from sycofinder import app, app_home, app_maxdiv, app_ga, app_ml
+import dash.dependencies as dep
 
 
-@app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
+@app.callback(
+    dep.Output('page-content', 'children'), [dep.Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/maxdiv':
+    if pathname is None:
+        return app_home.layout
+
+    if pathname.endswith('/maxdiv/'):
         return app_maxdiv.layout
-    elif pathname == '/ga':
+    elif pathname.endswith('/ga/'):
         return app_ga.layout
-    elif pathname == '/ml':
+    elif pathname.endswith('/ml/'):
         return app_ml.layout
-    return home
+    return app_home.layout
 
 
 if __name__ == '__main__':
     app.run_server(debug=True, host='0.0.0.0')
-    #app.run_server()

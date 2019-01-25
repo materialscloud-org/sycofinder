@@ -12,31 +12,36 @@ import pandas as pd
 from . import ga
 from .common import HIDE, SHOW, generate_table
 
-layout = html.Div([
-    dcc.Upload(
-        id='ga_upload',
-        children=html.Div(['Drag and Drop or ',
-                           html.A('Select Files')]),
-        style={
-            'width': '100%',
-            'height': '60px',
-            'lineHeight': '60px',
-            'borderWidth': '1px',
-            'borderStyle': 'dashed',
-            'borderRadius': '5px',
-            'textAlign': 'center',
-            'margin': '10px'
-        },
-        multiple=False),
-    html.Div(id='ga_parsed_data', style=HIDE),
-    html.Div(id='ga_parsed_data_table'),
-    html.Div(
-        [
-            html.Button('compute', id='ga_btn_compute'),
-            html.Div('', id='ga_compute_info')
-        ],
-        id='div_compute')
-])
+layout = html.Div(
+    [
+        dcc.Upload(
+            id='ga_upload',
+            children=html.Div(['Drag and Drop or ',
+                               html.A('Select Files')]),
+            style={
+                'width': '100%',
+                'height': '60px',
+                'lineHeight': '60px',
+                'borderWidth': '1px',
+                'borderStyle': 'dashed',
+                'borderRadius': '5px',
+                'textAlign': 'center',
+                'margin': '10px'
+            },
+            multiple=False),
+        html.Div(id='ga_parsed_data', style=HIDE),
+        html.Div(id='ga_parsed_data_table'),
+        html.Div(
+            [
+                html.Button('compute', id='ga_btn_compute'),
+                html.Div('', id='ga_compute_info')
+            ],
+            id='div_compute'),
+    ],
+    id="container",
+    # tag for iframe resizer
+    **{'data-iframe-height': ''},
+)
 
 
 @app.callback(
