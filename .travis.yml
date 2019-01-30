@@ -1,0 +1,19 @@
+language: python
+python:
+- "3.6"
+
+before_install:
+- pip install -U pip
+
+install:
+- pip install -e .[pre-commit]
+- cat "#!/bin/bash\necho 'network'" > network; chmod +x network
+
+env:
+  matrix:
+  - TEST_TYPE: test
+  - TEST_TYPE: pre-commit
+
+script:
+- if [ "$TEST_TYPE" == "tests" ] ; then python -m unittest discover; fi
+- if [ "$TEST_TYPE" == "pre-commit" ] ; then pre-commit install; pre-commit run --all-files || ( git status --short; git diff ; exit 1 ); fi
