@@ -31,3 +31,6 @@ img.sycologo {
   vertical-align: middle;
 }
 
+button.action-button {
+  margin: 10px;
+}

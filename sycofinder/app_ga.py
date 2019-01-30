@@ -83,10 +83,11 @@ def show_button(json):
 # pylint: disable=unused-argument, unused-variable
 def on_compute(n_clicks, json):
     if json is None:
-        return
+        return ""
     df = pd.read_json(json, orient='split')
 
-    new_pop, variables = ga.main(input_data=df.values, var_names=list(df))
+    new_pop, variables = ga.main(
+        input_data=df.values, var_names=list(df), mutation_shrink_factor=1.0)
     df_new = pd.DataFrame(new_pop, columns=variables)
     df_new['Fitness'] = ""
 

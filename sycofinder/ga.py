@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 from __future__ import division, print_function
-from builtins import zip, range  # pylint: disable=redefined-builtins
+from builtins import zip, range  # pylint: disable=redefined-builtin
 from deap import base, creator
 import numpy as np
 import random
@@ -27,10 +27,8 @@ def initIndividual(icls, content):
 
 
 def initPopulation(pcls, ind_init, input_data, var_names):
-    if var_names[-1].lower() not in ['fitness','scores','rank']:
+    if var_names[-1].lower() not in ['fitness', 'scores', 'rank']:
         raise ValueError("Last column needs to be 'fitness'")
-
-    fitness = input_data[:, -1]
 
     return pcls(ind_init(c) for c in input_data), var_names[:-1]
 
@@ -72,10 +70,11 @@ def selectProportionate(chances):
 
     return ind1, ind2
 
-def selectTournament(chances,tournament_size):
+
+def selectTournament(chances, tournament_size):
     # this function selects individuals by running sets of tournaments between individuals.
     # The chance of winning a tournament is proportional to the the fitness of participants.
-    participants1=random.sample(range(len(chances)),k=tournament_size)
+    participants1 = random.sample(range(len(chances)), k=tournament_size)
     chances_tourn1 = [chances[i] for i in participants1]
     s = sum(chances_tourn1)
     normalized_chances = [c / s for c in chances_tourn1]
@@ -88,9 +87,9 @@ def selectTournament(chances,tournament_size):
         p = p + normalized_chances[ind1]
     ind1 = participants1[ind1]
     # choosing ind2 not the same as ind1
-    participants2=[ind1]
+    participants2 = [ind1]
     while ind1 in participants2:
-        participants2=random.sample(range(len(chances)),k=tournament_size)
+        participants2 = random.sample(range(len(chances)), k=tournament_size)
     chances_tourn2 = [chances[i] for i in participants2]
     s = sum(chances_tourn2)
     normalized_chances = [c / s for c in chances_tourn2]
@@ -103,9 +102,7 @@ def selectTournament(chances,tournament_size):
         p = p + normalized_chances[ind2]
     ind2 = participants2[ind2]
 
-
     return ind1, ind2
-
 
 
 def mateIntermediate(par1, par2, nvar):
@@ -129,7 +126,19 @@ def mutGaussian(offspring, var_std):
     return mutated_genes
 
 
-def main(input_data, var_names,mutation_shrink_factor):
+def main(input_data, var_names, mutation_shrink_factor=1.0):
+    """
+    Evolve input data using genetic algorithm.
+
+    :param input_data: 2d array of input parameters
+        last column needs to be the fitness column
+    :param var_names:  names of variables
+        checks that last name is "fitness" (or similar)
+    :param mutation_shrink_factor: multiplicator for width of Gaussian to determin mutation range - 
+        1.0 translates into 20% of the full width of the data along the given dimension
+    """
+    # pylint: disable=too-many-locals
+
     pop, variables = toolbox.population_guess(input_data, var_names)
     # print("variables: ", variables)
     # print("Old population has %i individuals." % (len(pop)))
@@ -141,14 +150,15 @@ def main(input_data, var_names,mutation_shrink_factor):
     # mutation standard deviation based on variables ranges. Need to be corrected later! #
     UB = np.amax(input_data[:, :-1], axis=0)
     LB = np.amin(input_data[:, :-1], axis=0)
-    varSTD = [mutation_shrink_factor*(m - n) / 5.0 for m, n in zip(UB, LB)]
-    migration_rate, mutation_rate, number_generations = 0.1, 0.2, 1
-    tournament_size=4
+    varSTD = [mutation_shrink_factor * (m - n) / 5.0 for m, n in zip(UB, LB)]
+    # Note: we always compute only 1 generation (no GA in silico yet)
+    migration_rate, mutation_rate = 0.1, 0.2
+    tournament_size = 4
     new_pop = []
-    for i in range(len(pop)):
+    for _i in range(len(pop)):
         if random.random() < migration_rate:  # migration
             # indv1, indv2 = selectProportionate(selection_chance)
-            indv1, indv2 = selectTournament(selection_chance,tournament_size)
+            indv1, indv2 = selectTournament(selection_chance, tournament_size)
             offspring = [
                 pop[indv1].__getitem__(i) for i in range(len(variables))
             ]
@@ -158,7 +168,7 @@ def main(input_data, var_names,mutation_shrink_factor):
         else:
             ## selecting two parents with chances proportional to their rank
             # indv1, indv2 = selectProportionate(selection_chance)
-            indv1, indv2 = selectTournament(selection_chance,tournament_size)
+            indv1, indv2 = selectTournament(selection_chance, tournament_size)
             parent1, parent2 = pop[indv1], pop[indv2]
             ## Apply crossover and mutation on the offspring
             offspring = mateIntermediate(parent1, parent2, len(variables))
@@ -166,6 +176,5 @@ def main(input_data, var_names,mutation_shrink_factor):
                 offspring = mutGaussian(offspring, varSTD)
 
         new_pop.append(offspring)
-
 
     return np.array(new_pop), variables

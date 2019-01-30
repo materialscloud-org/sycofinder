@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=wrong-import-position,import-error,multiple-imports
 from __future__ import print_function
-from builtins import range  # pylint: disable=redefined-builtins
+from builtins import range  # pylint: disable=redefined-builtin
 from future import standard_library
 standard_library.install_aliases()
 import urllib.request, urllib.parse, urllib.error
@@ -10,7 +10,6 @@ import dash_table_experiments as dt
 import base64
 import io
 import pandas as pd
-import numpy as np
 
 
 def render_df(df):

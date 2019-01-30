@@ -17,8 +17,8 @@ from . import app
 
 # variables
 variables = collections.OrderedDict([
-    ('temperature', dict(
-        label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
+    ('temperature',
+     dict(label='Temperature [C]', range=[100.0, 200.0], weight=1.0)),
     ('r_ratio', dict(label='Reactants ratio', range=[0.8, 1.8], weight=1.0)),
     #    ('power',
     #     dict(label='Microwave Power [W]', range=[150.0, 250.0], weight=2.0)),
@@ -101,35 +101,37 @@ weight_states = [
     dash.dependencies.State(k + "_weight", 'value') for k in var_ids
 ]
 
-inp_nvars = html.Div([
-    html.Span('Number of variables: '),
-    dcc.Input(
-        id='inp_nvars',
-        type='number',
-        value=NVARS_DEFAULT,
-        max=NVARS_MAX,
-        min=1,
-        className="nvars range")
+inp_nvars = html.Tr([
+    html.Td('Number of variables: '),
+    html.Td(
+        dcc.Input(
+            id='inp_nvars',
+            type='number',
+            value=NVARS_DEFAULT,
+            max=NVARS_MAX,
+            min=1,
+            className="nvars range"))
 ])
 
-inp_nsamples = html.Div([
-    html.Span('Number of samples: '),
-    dcc.Input(
-        id='nsamples', type='number', value=10, className="nsamples range")
+inp_nsamples = html.Tr([
+    html.Td('Number of samples: '),
+    html.Td(
+        dcc.Input(
+            id='nsamples', type='number', value=10,
+            className="nsamples range"))
 ])
 
 ninps = len(label_states + low_states + high_states + weight_states) + 2
 
 btn_compute = html.Div([
-    html.Button('compute', id='btn_compute'),
+    html.Button('compute', id='btn_compute', className='action-button'),
     html.Div('', id='compute_info')
 ])
 
 # Creation of dash app
 layout = html.Div(
     [
-        inp_nvars,
-        inp_nsamples,
+        html.Table([inp_nvars, inp_nsamples]),
         controls_html,
         btn_compute,
         #graph, hover_info,
