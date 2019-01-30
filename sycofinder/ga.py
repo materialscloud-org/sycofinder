@@ -119,7 +119,7 @@ def mateIntermediate(par1, par2, nvar):
     return child_genes
 
 
-def muteGaussian(offspring, var_std):
+def mutGaussian(offspring, var_std):
     # this function applies a gaussian mutation. I need to add a user defined variable ranges to it later
     mutated_genes = [
         g + np.random.normal(loc=0.0, scale=std)
@@ -129,10 +129,10 @@ def muteGaussian(offspring, var_std):
     return mutated_genes
 
 
-def main(input_data, var_names):
+def main(input_data, var_names,mutation_shrink_factor):
     pop, variables = toolbox.population_guess(input_data, var_names)
-    print("variables: ", variables)
-    print("Old population has %i individuals." % (len(pop)))
+    # print("variables: ", variables)
+    # print("Old population has %i individuals." % (len(pop)))
     # using rank instead of fitness #
     rank = rankInds(pop)
     selection_chance = [
@@ -141,7 +141,7 @@ def main(input_data, var_names):
     # mutation standard deviation based on variables ranges. Need to be corrected later! #
     UB = np.amax(input_data[:, :-1], axis=0)
     LB = np.amin(input_data[:, :-1], axis=0)
-    varSTD = [(m - n) / 5.0 for m, n in zip(UB, LB)]
+    varSTD = [mutation_shrink_factor*(m - n) / 5.0 for m, n in zip(UB, LB)]
     migration_rate, mutation_rate, number_generations = 0.1, 0.2, 1
     tournament_size=4
     new_pop = []
@@ -153,7 +153,7 @@ def main(input_data, var_names):
                 pop[indv1].__getitem__(i) for i in range(len(variables))
             ]
             if random.random() < mutation_rate:
-                offspring = muteGaussian(offspring, varSTD)
+                offspring = mutGaussian(offspring, varSTD)
 
         else:
             ## selecting two parents with chances proportional to their rank
@@ -163,7 +163,7 @@ def main(input_data, var_names):
             ## Apply crossover and mutation on the offspring
             offspring = mateIntermediate(parent1, parent2, len(variables))
             if random.random() < mutation_rate:
-                offspring = muteGaussian(offspring, varSTD)
+                offspring = mutGaussian(offspring, varSTD)
 
         new_pop.append(offspring)
 
