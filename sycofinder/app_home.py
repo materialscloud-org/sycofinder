@@ -2,20 +2,24 @@ import dash_html_components as html
 from . import app
 
 about = """
-SyCoFinder was designed to aid experiments in order to efficiently explore the
-chemical space involved in the synthesis of metal-organic frameworks.
+SyCoFinder was designed to aid humans and robots to efficiently explore the space
+of experimental parameters in chemical synthesis.
 
-The first component of the app generates a diverse set of synthesis conditions
+The first component generates a diverse set of synthesis conditions
 in the chemical space defined by the user (potentially already including chemical
 intuition by assigning variable importance).
 
-Users then perform experiments, recording the fitness of the samples obtained
-(fitness scores are user specific, higher is better).  These records are fed
+Users then perform experiments and record the fitness of the samples obtained
+(fitness scores can be application-specific, higher is better). These records are fed
 into the second component of the app, which optimizes the synthesis conditions
 using a genetic algorithm.
+This step can be repeated until a satisfactory result is obtained.
 
 Finally, the complete set of experiments and fitness records can be used to determine
 the importance of experimental variables using a machine learning algorithm.
+
+SyCoFinder was designed with the synthesis of metal-organic frameworks in mind
+but may be useful in other applications of robotic synthesis.
 """
 
 changelog = [
@@ -54,6 +58,11 @@ layout = [
                             'Determine importance of variables', href='ml/')),
                 ]),
                 className="sycolinks"),
+            html.Div([
+                "Download ",
+                html.A("sample data", href="assets/diverse_set.csv"),
+                " for steps 2 & 3.",
+            ]),
             html.H2("Changelog"),
             html.Ul([
                 html.Li([html.B(k + " "), html.Span(v)]) for k, v in changelog
