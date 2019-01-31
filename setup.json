@@ -26,9 +26,9 @@
     "extras_require": {
         "pre-commit": [
             "pre-commit==1.13.0",
-            "yapf==0.24.0",
+            "yapf==0.23.0",
             "prospector==1.1.6.2",
-            "pylint==2.2.2"
+            "pylint==2.1.1"
         ]
     }
 }

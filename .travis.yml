@@ -14,6 +14,9 @@ env:
   - TEST_TYPE: test
   - TEST_TYPE: pre-commit
 
+  allow_failures:
+  - TEST_TYPE: pre-commit
+
 script:
 - if [ "$TEST_TYPE" == "tests" ] ; then python -m unittest discover; fi
 - if [ "$TEST_TYPE" == "pre-commit" ] ; then pre-commit install; pre-commit run --all-files || ( git status --short; git diff ; exit 1 ); fi

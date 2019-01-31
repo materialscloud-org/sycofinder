@@ -68,16 +68,15 @@ def get_controls(id, desc, range, default_weight=0.0):
         value=default_weight,
         step=0.01)
     #grid = dcc.Input(id=id + "_grid", type='number', value=ngrid)
-    return html.Tr(
-        [
-            html.Td(label),
-            html.Td([range_low, html.Span('to'), range_high]),
-            html.Td([
-                html.Span(slider, className="slider"),
-                html.Span('', id=id + "_weight_label")
-            ])
-        ],
-        id=id + "_tr")
+    return html.Tr([
+        html.Td(label),
+        html.Td([range_low, html.Span('to'), range_high]),
+        html.Td([
+            html.Span(slider, className="slider"),
+            html.Span('', id=id + "_weight_label")
+        ])
+    ],
+                   id=id + "_tr")
 
 
 controls_dict = collections.OrderedDict()

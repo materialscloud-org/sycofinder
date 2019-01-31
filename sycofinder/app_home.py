@@ -65,6 +65,12 @@ layout = [
             html.H2("Changelog"),
             html.Ul([
                 html.Li([html.B(k + " "), html.Span(v)]) for k, v in changelog
+            ], ),
+            html.P([
+                "Find the code ",
+                html.A(
+                    "on github", href="https://github.com/ltalirz/sycofinder"),
+                "."
             ]),
         ],
         id="container",

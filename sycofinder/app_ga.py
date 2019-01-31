@@ -33,28 +33,39 @@ layout = html.Div(
         html.Div(id='ga_parsed_info'),
         html.Div(id='ga_parsed_data', style=HIDE),
         html.Div(id='ga_parsed_data_table'),
-        html.Div([
-            html.Button(
-                'compute', id='ga_btn_compute', className="action-button"),
-            html.Span([
-                "Mutation range",
-                dcc.Slider(
-                    id="ga_mutation_slider",
-                    min=-1,
-                    max=1,
-                    value=0,
-                    step=0.01,
-                    className="slider",
-                )
-            ]),
-            html.Div('', id='ga_compute_info')
-        ],
-                 id='div_compute'),
+        html.Div(
+            [
+                html.Button(
+                    'compute', id='ga_btn_compute', className="action-button"),
+                html.Span([
+                    "Mutation range",
+                    dcc.Slider(
+                        id="ga_mutation_slider",
+                        min=-1,
+                        max=1,
+                        value=0,
+                        step=0.01,
+                        className="slider",
+                    ),
+                    # remove style in order to show label
+                    html.Span('', id="ga_mutation_slider_label", style=HIDE)
+                ]),
+                html.Div('', id='ga_compute_info')
+            ],
+            id='div_compute'),
     ],
     id="container",
     # tag for iframe resizer
     **{'data-iframe-height': ''},
 )
+
+
+@app.callback(
+    Output('ga_mutation_slider_label', 'children'),
+    [Input('ga_mutation_slider', 'value')])
+def slider_output(value):
+    """Callback for updating slider value"""
+    return "{:5.2f}".format(10**value)
 
 
 # Using multiple outputs as provided here:
