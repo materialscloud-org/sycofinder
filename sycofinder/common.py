@@ -11,7 +11,7 @@ import base64
 import io
 import pandas as pd
 
-sample_data_link = html.A("sample data", href="/assets/fitness_sample.csv")
+sample_data_link = html.A("sample data", href="../assets/fitness_sample.csv")
 upload_hint = html.P([
     "Upload CSV file with experimental parameters and corresponding fitness values (see ",
     sample_data_link, ")."
