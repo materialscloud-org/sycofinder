@@ -27,10 +27,7 @@ def initIndividual(icls, content):
 
 
 def initPopulation(pcls, ind_init, input_data, var_names):
-    if var_names[-1].lower() not in ['fitness', 'scores', 'rank']:
-        raise ValueError("Last column needs to be 'fitness'")
-
-    return pcls(ind_init(c) for c in input_data), var_names[:-1]
+    return pcls(ind_init(c) for c in input_data), var_names[-1]
 
 
 toolbox.register("individual_guess", initIndividual, creator.Individual)

@@ -11,8 +11,8 @@
     "version": "0.1.1",
     "install_requires": [
         "future",
-        "dash",
-        "dash_renderer",
+        "dash==0.36.0rc1",
+        "dash-renderer==0.17.0rc1",
         "dash-core-components",
         "dash-html-components",
         "dash-table-experiments",

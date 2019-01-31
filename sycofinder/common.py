@@ -78,8 +78,8 @@ def parse_contents(contents, filename, date):
 
 def validate_df(df):
     row_titles = list(df)
-    if row_titles[-1].lower() != 'fitness':
-        raise ValueError("Last column needs to be 'fitness', got {}".format(
+    if row_titles[-1].lower() not in ['fitness', 'scores', 'rank']:
+        raise ValueError("Last column needs to be 'fitness', got '{}'.".format(
             row_titles[-1]))
 
     return df.astype(dtype="float64")

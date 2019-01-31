@@ -14,6 +14,9 @@ from .common import HIDE, SHOW, generate_table
 
 layout = html.Div(
     [
+        html.
+        P("Upload CSV file with experimental parameters and corresponding fitness values"
+          ),
         dcc.Upload(
             id='ga_upload',
             children=html.Div(['Drag and Drop or ',
@@ -29,11 +32,24 @@ layout = html.Div(
                 'margin': '10px'
             },
             multiple=False),
+        html.Div(id='ga_parsed_info'),
         html.Div(id='ga_parsed_data', style=HIDE),
         html.Div(id='ga_parsed_data_table'),
         html.Div(
             [
-                html.Button('compute', id='ga_btn_compute'),
+                html.Button(
+                    'compute', id='ga_btn_compute', className="action-button"),
+                html.Span([
+                    "Mutation range",
+                    dcc.Slider(
+                        id="ga_mutation_slider",
+                        min=-1,
+                        max=1,
+                        value=0,
+                        step=0.01,
+                        className="slider",
+                    )
+                ]),
                 html.Div('', id='ga_compute_info')
             ],
             id='div_compute'),
@@ -44,21 +60,35 @@ layout = html.Div(
 )
 
 
-@app.callback(
-    Output('ga_parsed_data', 'children'), [
-        Input('ga_upload', 'contents'),
-        Input('ga_upload', 'filename'),
-        Input('ga_upload', 'last_modified')
-    ])
+# Using multiple outputs as provided here:
+# https://github.com/plotly/dash/pull/436
+# TODO: Once this is released in the core, remove version pinning in setup.json
+@app.callback([
+    Output('ga_parsed_data', 'children'),
+    Output('ga_parsed_info', 'children')
+], [
+    Input('ga_upload', 'contents'),
+    Input('ga_upload', 'filename'),
+    Input('ga_upload', 'last_modified')
+])
 def parse_data(content, name, date):
     if content is None:
         return ''
 
     from .common import validate_df, parse_contents
 
-    df = parse_contents(content, name, date)
-    validate_df(df)
-    return df.to_json(date_format='iso', orient='split')
+    try:
+        df = parse_contents(content, name, date)
+        validate_df(df)
+    except ValueError as e:
+        return None, html.P(str(e), className="error")
+
+    nrows = len(df)
+    fitness = df.iloc[:, -1]
+    msg = "Found {} experiments, with fitness from {} to {}.".format(
+        nrows, fitness.min(), fitness.max())
+
+    return df.to_json(date_format='iso', orient='split'), html.P(msg)
 
 
 @app.callback(
@@ -77,17 +107,23 @@ def show_button(json):
 #    return generate_table(df, download_link=False)
 #
 @app.callback(
-    Output('ga_compute_info',
-           'children'), [Input('ga_btn_compute', 'n_clicks')],
-    [State('ga_parsed_data', 'children')])
+    Output('ga_compute_info', 'children'),
+    [Input('ga_btn_compute', 'n_clicks')],
+    [
+        State('ga_parsed_data', 'children'),
+        State('ga_mutation_slider', 'value')
+    ],
+)
 # pylint: disable=unused-argument, unused-variable
-def on_compute(n_clicks, json):
+def on_compute(n_clicks, json, mutation_slider):
     if json is None:
         return ""
     df = pd.read_json(json, orient='split')
 
     new_pop, variables = ga.main(
-        input_data=df.values, var_names=list(df), mutation_shrink_factor=1.0)
+        input_data=df.values,
+        var_names=list(df),
+        mutation_shrink_factor=10**mutation_slider)
     df_new = pd.DataFrame(new_pop, columns=variables)
     df_new['Fitness'] = ""
 
