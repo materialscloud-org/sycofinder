@@ -46,6 +46,10 @@ layout = html.Div(
                         value=0,
                         step=0.01,
                         className="slider",
+                        marks={
+                            -1: "small",
+                            1: "large",
+                        },
                     ),
                     # remove style in order to show label
                     html.Span('', id="ga_mutation_slider_label", style=HIDE)
