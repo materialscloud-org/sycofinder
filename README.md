@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ltalirz/sycofinder.svg?branch=master)](https://travis-ci.org/ltalirz/sycofinder)
 [![DOI](https://zenodo.org/badge/139702936.svg)](https://zenodo.org/badge/latestdoi/139702936)
 
 # LSMO Synthesis Condition Finder
@@ -28,3 +29,17 @@ python run.py
 ./run-docker.sh
 # open http://localhost:8050
 ```
+
+## Citing SyCoFinder
+
+If your scientific work has benefited from the use of SyCoFinder,
+please consider an acknowledgement through the following citation
+
+ * Seyed Mohamad Moosavi, Arunraj Chidambaram, Leopold Talirz, Maciej Haranczyk, Kyriakos C. Stylianou, Berend Smit. _Nat. Commun._ doi: [10.1038/s41467-019-08483-9](https://dx.doi.org/10.1038/s41467-019-08483-9)
+ * Talirz, L., Moosavi, S. M.  SyCoFinder (2019). [![DOI](https://zenodo.org/badge/139702936.svg)](https://zenodo.org/badge/latestdoi/139702936)
+
+## Contact
+
+For information concerning SyCoFinder, please contact
+[leopold.talirz@gmail.com](mailto:leopold.talirz@gmail.com)
+or [open an issue](https://github.com/ltalirz/sycofinder/issues/new).

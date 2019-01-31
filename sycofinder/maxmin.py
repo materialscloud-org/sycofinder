@@ -20,7 +20,7 @@ def check_sample(a, var_LB, var_UB):
     a = np.asarray(a)
     a = np.multiply(a, (var_UB - var_LB)) + var_LB
     vol = np.sum(a[4:9])
-    cond = vol <= 6 and vol >= 1
+    cond = vol <= 6 and vol >= 1  # pylint: disable=chained-comparison
 
     return cond
 

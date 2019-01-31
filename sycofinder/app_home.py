@@ -23,6 +23,10 @@ but may be useful in other applications of robotic synthesis.
 """
 
 changelog = [
+    [
+        "v0.2.0",
+        "switch to 'tournament' selection, add mutation range slider & validation"
+    ],
     ["v0.1.1", "reduce max number of variables to 5"],
     ["v0.1.0", "release on Materials Cloud"],
 ]

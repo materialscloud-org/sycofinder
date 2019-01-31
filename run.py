@@ -6,6 +6,7 @@ import dash.dependencies as dep
 @app.callback(
     dep.Output('page-content', 'children'), [dep.Input('url', 'pathname')])
 def display_page(pathname):
+    # pylint: disable=no-else-return
     if pathname is None:
         return app_home.layout
 
