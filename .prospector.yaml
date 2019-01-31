@@ -1,0 +1,4 @@
+mccabe:
+  run: false
+
+autodetect: false
