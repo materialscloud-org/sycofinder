@@ -10,12 +10,13 @@ import plotly.graph_objs as go
 import pandas as pd
 
 from . import ml
-from .common import HIDE, SHOW
+from .common import HIDE, SHOW, upload_hint, parse_data
 
 graph_layout = dict(autosize=False, width=600, height=600)
 
 layout = html.Div(
     [
+        upload_hint,
         dcc.Upload(
             id='ml_upload',
             children=html.Div(['Drag and Drop or ',
@@ -31,6 +32,7 @@ layout = html.Div(
                 'margin': '10px'
             },
             multiple=False),
+        html.Div(id='ml_parsed_info'),
         html.Div(id='ml_parsed_data', style=HIDE),
         #html.Div(id='ml_parsed_data_table'),
         html.Div(
@@ -48,21 +50,16 @@ layout = html.Div(
 )
 
 
-@app.callback(
-    Output('ml_parsed_data', 'children'), [
-        Input('ml_upload', 'contents'),
-        Input('ml_upload', 'filename'),
-        Input('ml_upload', 'last_modified')
-    ])
-def update_output(content, name, date):
-    if content is None:
-        return ''
-
-    from .common import validate_df, parse_contents
-
-    df = parse_contents(content, name, date)
-    validate_df(df)
-    return df.to_json(date_format='iso', orient='split')
+@app.callback([
+    Output('ml_parsed_data', 'children'),
+    Output('ml_parsed_info', 'children'),
+], [
+    Input('ml_upload', 'contents'),
+    Input('ml_upload', 'filename'),
+    Input('ml_upload', 'last_modified')
+])
+def parse_data_ml(content, name, date):
+    return parse_data(content, name, date)
 
 
 @app.callback(

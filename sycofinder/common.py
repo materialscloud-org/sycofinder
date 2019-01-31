@@ -11,6 +11,12 @@ import base64
 import io
 import pandas as pd
 
+sample_data_link = html.A("sample data", href="/assets/fitness_sample.csv")
+upload_hint = html.P([
+    "Upload CSV file with experimental parameters and corresponding fitness values (see ",
+    sample_data_link, ")."
+])
+
 
 def render_df(df):
     return html.Div([
@@ -83,6 +89,24 @@ def validate_df(df):
             row_titles[-1]))
 
     return df.astype(dtype="float64")
+
+
+def parse_data(content, name, date):
+    if content is None:
+        return None, None
+
+    try:
+        df = parse_contents(content, name, date)
+        validate_df(df)
+    except ValueError as e:
+        return None, html.P(str(e), className="error")
+
+    nrows = len(df)
+    fitness = df.iloc[:, -1]
+    msg = "Found {} experiments, with fitness from {} to {}.".format(
+        nrows, fitness.min(), fitness.max())
+
+    return df.to_json(date_format='iso', orient='split'), html.P(msg)
 
 
 # styles

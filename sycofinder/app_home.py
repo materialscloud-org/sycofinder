@@ -62,11 +62,6 @@ layout = [
                             'Determine importance of variables', href='ml/')),
                 ]),
                 className="sycolinks"),
-            html.P([
-                "Download ",
-                html.A("sample data", href="assets/fitness_sample.csv"),
-                " for steps 2 & 3.",
-            ]),
             html.H2("Changelog"),
             html.Ul([
                 html.Li([html.B(k + " "), html.Span(v)]) for k, v in changelog

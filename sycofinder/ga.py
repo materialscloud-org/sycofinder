@@ -27,7 +27,7 @@ def initIndividual(icls, content):
 
 
 def initPopulation(pcls, ind_init, input_data, var_names):
-    return pcls(ind_init(c) for c in input_data), var_names[-1]
+    return pcls(ind_init(c) for c in input_data), var_names[:-1]
 
 
 toolbox.register("individual_guess", initIndividual, creator.Individual)

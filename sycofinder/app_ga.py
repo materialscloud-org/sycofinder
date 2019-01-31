@@ -10,13 +10,11 @@ from . import app
 import pandas as pd
 
 from . import ga
-from .common import HIDE, SHOW, generate_table
+from .common import HIDE, SHOW, generate_table, upload_hint, parse_data
 
 layout = html.Div(
     [
-        html.
-        P("Upload CSV file with experimental parameters and corresponding fitness values"
-          ),
+        upload_hint,
         dcc.Upload(
             id='ga_upload',
             children=html.Div(['Drag and Drop or ',
@@ -71,24 +69,8 @@ layout = html.Div(
     Input('ga_upload', 'filename'),
     Input('ga_upload', 'last_modified')
 ])
-def parse_data(content, name, date):
-    if content is None:
-        return ''
-
-    from .common import validate_df, parse_contents
-
-    try:
-        df = parse_contents(content, name, date)
-        validate_df(df)
-    except ValueError as e:
-        return None, html.P(str(e), className="error")
-
-    nrows = len(df)
-    fitness = df.iloc[:, -1]
-    msg = "Found {} experiments, with fitness from {} to {}.".format(
-        nrows, fitness.min(), fitness.max())
-
-    return df.to_json(date_format='iso', orient='split'), html.P(msg)
+def parse_data_ga(content, name, date):
+    return parse_data(content, name, date)
 
 
 @app.callback(
