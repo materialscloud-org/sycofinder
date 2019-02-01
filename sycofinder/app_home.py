@@ -69,8 +69,9 @@ layout = [
             html.P([
                 "Find the code ",
                 html.A(
-                    "on github", href="https://github.com/ltalirz/sycofinder"),
-                "."
+                    "on github",
+                    href="https://github.com/ltalirz/sycofinder",
+                    target='_blank'), "."
             ]),
         ],
         id="container",
