@@ -57,10 +57,6 @@ RUN pip3 install --user -e . --no-warn-script-location
 USER root
 RUN chown -R app:app /home/app
 
-## run dash server
-#EXPOSE 8050
-#CMD ["python", "run-proxy.py"]
-
 # run apache server (via baseimage-docker's init system)
 EXPOSE 80
 CMD ["/sbin/my_init"]
