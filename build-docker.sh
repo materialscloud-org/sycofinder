@@ -1,1 +1,1 @@
-docker build -t lsmo-maxdiv-dash:latest . 
+docker build --no-cache -t lsmo-maxdiv-dash:latest . 
