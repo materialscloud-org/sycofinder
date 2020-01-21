@@ -7,7 +7,6 @@ import collections
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-#import dash_table_experiments as dt
 
 import pandas as pd
 import numpy as np
@@ -71,15 +70,14 @@ def get_controls(id, desc, range, default_weight=0.0):
                         min=weight_range[0],
                         max=weight_range[1],
                         value=default_weight,
-                        step=0.01)
+                        step=0.01,
+                        className="slider")
     #grid = dcc.Input(id=id + "_grid", type='number', value=ngrid)
     return html.Tr([
         html.Td(label),
         html.Td([range_low, html.Span('to'), range_high]),
-        html.Td([
-            html.Span(slider, className="slider"),
-            html.Span('', id=id + "_weight_label")
-        ])
+        html.Td([html.Span(slider),
+                 html.Span('', id=id + "_weight_label")])
     ],
                    id=id + "_tr")
 

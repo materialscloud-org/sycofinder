@@ -6,7 +6,7 @@ from future import standard_library
 standard_library.install_aliases()
 import urllib.request, urllib.parse, urllib.error
 import dash_html_components as html
-import dash_table_experiments as dt
+import dash_table as dt
 import base64
 import io
 import pandas as pd
@@ -20,8 +20,6 @@ upload_hint = html.P([
 
 def render_df(df):
     return html.Div([
-        # Use the DataTable prototype component:
-        # github.com/plotly/dash-table-experiments
         dt.DataTable(rows=df.to_dict('records')),
     ])
 
@@ -30,15 +28,15 @@ def generate_table(dataframe, max_rows=100, download_link=False):
 
     components = []
     if download_link:
-        csv_string = dataframe.to_csv(
-            index=False, encoding='utf-8', float_format='%.2f')
-        link = html.A(
-            'Download CSV',
-            download="synthesis_conditions.csv",
-            href="data:text/csv;charset=utf-8," +
-            urllib.parse.quote(csv_string),
-            target="_blank",
-            className='button')
+        csv_string = dataframe.to_csv(index=False,
+                                      encoding='utf-8',
+                                      float_format='%.2f')
+        link = html.A('Download CSV',
+                      download="synthesis_conditions.csv",
+                      href="data:text/csv;charset=utf-8," +
+                      urllib.parse.quote(csv_string),
+                      target="_blank",
+                      className='button')
         components.append(link)
 
     components.append(

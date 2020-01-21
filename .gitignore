@@ -3,3 +3,4 @@
 *.bak
 *.egg-info/
 *.DS_Store
+*.log
