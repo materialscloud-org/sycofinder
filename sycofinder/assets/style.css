@@ -4,6 +4,10 @@
     margin: 0px 15px;
 }
 
+.dropdown { 
+    width: 250px;
+}
+
 .range { 
     width: 75px;
     display: inline-block;

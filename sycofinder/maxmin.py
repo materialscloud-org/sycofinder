@@ -31,15 +31,11 @@ def compute_distance(x, y, w):
     return np.linalg.norm(w * (x - y))
 
 
-def min_max(selected_set, nsamples, NPS, var_importance):
+def min_max(nsamples, NPS, var_importance):
     # This function returns the most diverse set of parameters weighted with variable importance.
     selected_indices = []
-    if len(selected_set) > nsamples:
-        print("Already selected set, no need for minMaX!")
-        return selected_set, selected_indices
+    selected_set = [np.zeros([1, NPS.shape[1]])]  # the selected points
 
-    if not selected_set:
-        selected_set = [np.zeros([1, NPS.shape[1]])]
     prtime_start = time.time()
     prtime = time.time()
     while len(selected_set) <= nsamples:
@@ -62,12 +58,18 @@ def min_max(selected_set, nsamples, NPS, var_importance):
     return selected_set, selected_indices
 
 
-def compute(var_importance, var_LB, var_UB, num_samples=10, ngrids_per_dim=5):
+def compute(var_importance,
+            var_LB,
+            var_UB,
+            method,
+            num_samples=10,
+            ngrids_per_dim=5):
     """Compute most diverse set of inputs.
 
     :param var_importance: list of weights
     :param var_LB: list of lower bounds
     :param var_UB: list of upper bounds
+    :param method: which method to use
     :param num_samples: number of samples to pick
     :param ngrids_per_dim: number of grid points in each variable
 
@@ -75,21 +77,32 @@ def compute(var_importance, var_LB, var_UB, num_samples=10, ngrids_per_dim=5):
     """
     num_variables = len(var_importance)
 
-    grids_dim = np.linspace(
-        0,
-        1,
-        num=ngrids_per_dim,
-        endpoint=True,
-    )
-    print(("On each dimension, we sample: ", grids_dim))
-    NPS1 = itertools.product(grids_dim, repeat=num_variables)
-    #NPS1=[np.array(i) for i in NPS1 if check_sample(i,var_LB,var_UB)]
-    NPS1 = [np.array(i) for i in NPS1]
-    NPS1 = np.asarray(NPS1)
-    print(("In total, there are ", len(NPS1), "samples in the space\n"))
+    if method == 'primitive':
+        grids_dim = np.linspace(
+            0,
+            1,
+            num=ngrids_per_dim,
+            endpoint=True,
+        )
+        print(("On each dimension, we sample: ", grids_dim))
+        NPS1 = itertools.product(grids_dim, repeat=num_variables)
+        #NPS1=[np.array(i) for i in NPS1 if check_sample(i,var_LB,var_UB)]
+        NPS1 = [np.array(i) for i in NPS1]
+        NPS1 = np.asarray(NPS1)
+        print(("In total, there are ", len(NPS1), "samples in the space\n"))
 
-    norm_diverse_set, sel_ind = min_max([], num_samples, NPS1, var_importance)
-    print(norm_diverse_set)
-    diverse_set = np.multiply(NPS1[sel_ind], var_UB - var_LB) + var_LB
+        norm_diverse_set, sel_ind = min_max([], num_samples, NPS1,
+                                            var_importance)
+        print(norm_diverse_set)
+        coords = NPS1[sel_ind]
+
+    elif method == 'convex-opt':
+        from .maxmin_dccp import max_min_dccp
+        coords = max_min_dccp(num_samples, var_importance)
+
+    else:
+        raise ValueError("Unknown method {}".format(method))
+
+    diverse_set = np.multiply(coords, var_UB - var_LB) + var_LB
 
     return diverse_set

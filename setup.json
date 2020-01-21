@@ -17,18 +17,20 @@
         "dash-html-components~=1.0",
         "dash-table-experiments~=0.6",
         "plotly~=3.4",
-        "numpy~=1.15",
+        "numpy~=1.18.1",
         "scipy~=1.2",
         "pandas~=0.23.4",
         "deap~=1.2",
+        "cvxpy~=1.0.25",
+        "dccp~=1.0.0",
         "sklearn~=0.0"
     ],
     "extras_require": {
         "pre-commit": [
             "pre-commit==1.13.0",
-            "yapf==0.24.0",
-            "prospector==1.1.6.2",
-            "pylint==2.1.1"
+            "yapf==0.29.0",
+            "prospector==1.2.0",
+            "pylint==2.4.4"
         ]
     }
 }

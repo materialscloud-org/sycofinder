@@ -34,7 +34,7 @@ NVARS_DEFAULT = len(variables)
 
 # Fill up to NVARS_MAX (needed to define callbacks)
 # Note: In the current implementation, anything beyond 6 takes too much time
-NVARS_MAX = 5
+NVARS_MAX = 8
 for i in range(len(variables), NVARS_MAX):
     k = 'variable_{}'.format(i + 1)
     variables[k] = dict(label=k, range=[0, 1], weight=1)
@@ -55,18 +55,23 @@ def get_controls(id, desc, range, default_weight=0.0):
      * range 
      * weight
     """
-    label = dcc.Input(
-        id=id + "_label", type='text', value=desc, className="label")
-    range_low = dcc.Input(
-        id=id + "_low", type='number', value=range[0], className="range")
-    range_high = dcc.Input(
-        id=id + "_high", type='number', value=range[1], className="range")
-    slider = dcc.Slider(
-        id=id + "_weight",
-        min=weight_range[0],
-        max=weight_range[1],
-        value=default_weight,
-        step=0.01)
+    label = dcc.Input(id=id + "_label",
+                      type='text',
+                      value=desc,
+                      className="label")
+    range_low = dcc.Input(id=id + "_low",
+                          type='number',
+                          value=range[0],
+                          className="range")
+    range_high = dcc.Input(id=id + "_high",
+                           type='number',
+                           value=range[1],
+                           className="range")
+    slider = dcc.Slider(id=id + "_weight",
+                        min=weight_range[0],
+                        max=weight_range[1],
+                        value=default_weight,
+                        step=0.01)
     #grid = dcc.Input(id=id + "_grid", type='number', value=ngrid)
     return html.Tr([
         html.Td(label),
@@ -89,8 +94,8 @@ head_row = html.Tr([
     html.Th('Range'),
     html.Th('Importance'),
 ])
-controls_html = html.Table(
-    [head_row] + list(controls_dict.values()), id='controls')
+controls_html = html.Table([head_row] + list(controls_dict.values()),
+                           id='controls')
 label_states = [
     dash.dependencies.State(k + "_label", 'value') for k in var_ids
 ]
@@ -103,24 +108,39 @@ weight_states = [
 inp_nvars = html.Tr([
     html.Td('Number of variables: '),
     html.Td(
-        dcc.Input(
-            id='inp_nvars',
-            type='number',
-            value=NVARS_DEFAULT,
-            max=NVARS_MAX,
-            min=1,
-            className="nvars range"))
+        dcc.Input(id='inp_nvars',
+                  type='number',
+                  value=NVARS_DEFAULT,
+                  max=NVARS_MAX,
+                  min=1,
+                  className="nvars range"))
 ])
 
 inp_nsamples = html.Tr([
     html.Td('Number of samples: '),
     html.Td(
-        dcc.Input(
-            id='nsamples', type='number', value=10,
-            className="nsamples range"))
+        dcc.Input(id='nsamples',
+                  type='number',
+                  value=10,
+                  className="nsamples range"))
 ])
 
-ninps = len(label_states + low_states + high_states + weight_states) + 2
+inp_method = html.Tr([
+    html.Td('Method'),
+    html.Td(
+        dcc.Dropdown(id='inp_method',
+                     options=[{
+                         'label': 'grid search (<=5 vars)',
+                         'value': 'primitive'
+                     }, {
+                         'label': 'optimization (<=20 samples)',
+                         'value': 'convex-opt'
+                     }],
+                     value='convex-opt',
+                     className="dropdown"))
+])
+
+ninps = len(label_states + low_states + high_states + weight_states) + 3
 
 btn_compute = html.Div([
     html.Button('compute', id='btn_compute', className='action-button'),
@@ -132,6 +152,7 @@ layout = html.Div(
     [
         html.Table([inp_nvars, inp_nsamples]),
         controls_html,
+        inp_method,
         btn_compute,
         #graph, hover_info,
         #click_info
@@ -147,9 +168,8 @@ layout = html.Div(
 # Callbacks for slider var_ids
 for k, v in list(controls_dict.items()):
 
-    @app.callback(
-        dash.dependencies.Output(k + '_weight_label', 'children'),
-        [dash.dependencies.Input(k + '_weight', 'value')])
+    @app.callback(dash.dependencies.Output(k + '_weight_label', 'children'),
+                  [dash.dependencies.Input(k + '_weight', 'value')])
     def slider_output(value):
         """Callback for updating slider value"""
         return "{:5.2f}".format(10**value)
@@ -158,9 +178,8 @@ for k, v in list(controls_dict.items()):
 # Callbacks to hide unselected variables
 for i in range(NVARS_MAX):
 
-    @app.callback(
-        dash.dependencies.Output(var_ids[i] + "_tr", 'style'),
-        [dash.dependencies.Input('inp_nvars', 'value')])
+    @app.callback(dash.dependencies.Output(var_ids[i] + "_tr", 'style'),
+                  [dash.dependencies.Input('inp_nvars', 'value')])
     def toggle_visibility(nvars, i=i):
         """Callback for setting variable visibility"""
         style = {}
@@ -174,11 +193,11 @@ for i in range(NVARS_MAX):
 states = label_states + low_states + high_states + weight_states
 states += [dash.dependencies.State('inp_nvars', 'value')]
 states += [dash.dependencies.State('nsamples', 'value')]
+states += [dash.dependencies.State('inp_method', 'value')]
 
 
-@app.callback(
-    dash.dependencies.Output('compute_info', 'children'),
-    [dash.dependencies.Input('btn_compute', 'n_clicks')], states)
+@app.callback(dash.dependencies.Output('compute_info', 'children'),
+              [dash.dependencies.Input('btn_compute', 'n_clicks')], states)
 # pylint: disable=unused-argument, unused-variable
 def on_compute(n_clicks, *args):
     """Callback for clicking compute button"""
@@ -189,16 +208,16 @@ def on_compute(n_clicks, *args):
         raise ValueError("Expected {} arguments".format(ninps))
 
     # parse arguments
-    nsamples = args[-1]
-    nvars = args[-2]
+    method = args[-1]
+    nsamples = args[-2]
+    nvars = args[-3]
 
     labels = args[:nvars]
     low_vals = np.array([args[i + NVARS_MAX] for i in range(nvars)])
     high_vals = np.array([args[i + 2 * NVARS_MAX] for i in range(nvars)])
     weight_vals = 10**np.array([args[i + 3 * NVARS_MAX] for i in range(nvars)])
 
-    mode = 'maxmin'
-    if mode == 'uniform':
+    if method == 'uniform':
         pass
         #samples = uniform.compute(
         #    var_LB=low_vals,
@@ -206,18 +225,19 @@ def on_compute(n_clicks, *args):
         #    num_samples=nsamples,
         #)
         #df = pd.DataFrame(data=samples, columns=labels)
-    elif mode == 'maxmin':
+    elif method in ['primitive', 'convex-opt']:
         samples = maxmin.compute(
             var_importance=weight_vals,
             var_LB=low_vals,
             var_UB=high_vals,
             num_samples=nsamples,
             ngrids_per_dim=ngrid,
+            method=method,
         )
         df = pd.DataFrame(data=samples, columns=labels)
 
     else:
-        raise ValueError("Unknown mode '{}'".format(mode))
+        raise ValueError("Unknown method '{}'".format(method))
 
     # add column for filling in experiments
     df['Fitness'] = ""
