@@ -33,7 +33,7 @@ NVARS_DEFAULT = len(variables)
 
 # Fill up to NVARS_MAX (needed to define callbacks)
 # Note: In the current implementation, anything beyond 6 takes too much time
-NVARS_MAX = 8
+NVARS_MAX = 20 
 for i in range(len(variables), NVARS_MAX):
     k = 'variable_{}'.format(i + 1)
     variables[k] = dict(label=k, range=[0, 1], weight=1)
