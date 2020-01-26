@@ -23,7 +23,8 @@
         "deap~=1.2",
         "cvxpy~=1.0.25",
         "dccp~=1.0.0",
-        "sklearn~=0.0"
+        "sklearn~=0.0",
+        "dask_distance~=0.0"
     ],
     "extras_require": {
         "pre-commit": [

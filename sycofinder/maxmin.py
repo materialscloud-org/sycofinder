@@ -11,6 +11,7 @@ from __future__ import print_function
 import numpy as np
 import itertools
 import time
+import dask_distance
 
 
 def check_sample(a, var_LB, var_UB):
@@ -25,37 +26,48 @@ def check_sample(a, var_LB, var_UB):
     return cond
 
 
+
+
 def compute_distance(x, y, w):
     # This function compute the pairwise distance between two vectors.
     # It weigths the distance based on the importance of variables.
     return np.linalg.norm(w * (x - y))
 
 
-def min_max(nsamples, NPS, var_importance):
+def maxmin(nsamples,NPS,var_importance):
     # This function returns the most diverse set of parameters weighted with variable importance.
-    selected_indices = []
-    selected_set = [np.zeros([1, NPS.shape[1]])]  # the selected points
+    selected_indices=[]
+    selected_set = []
+    if len(selected_set)>nsamples:
+        print("Already selected set, no need for minMaX!")
+        return selected_set,selected_indices
+
+    if len(selected_set)==0:
+        selected_set=[NPS[0,:]]
+        selected_indices.append(0)
 
     prtime_start = time.time()
-    prtime = time.time()
-    while len(selected_set) <= nsamples:
-        distances = np.zeros([NPS.shape[0], 1])
-        for i, psamp in enumerate(NPS):
-            min_dist = 100000000
-            for samp in selected_set:
-                d = compute_distance(samp, psamp, var_importance)
-                if d < min_dist:
-                    min_dist = d
-
-            distances[i] = min_dist
-        extime = time.time() - prtime
-        prtime = time.time()
-        print((np.argmax(distances), distances[np.argmax(distances)],
-               " execution time for current landmark: ", extime))
-        selected_indices.append(np.argmax(distances))
-        selected_set.append(NPS[np.argmax(distances), :])
+    test_time=[time.time()]
+    while len(selected_set)<nsamples:
+        selected_set_array = np.array(selected_set)
+        last_entry = selected_set[-1].reshape(1,-1)
+        dtemp = dask_distance.cdist(last_entry, NPS , metric='euclidean')
+        d = np.asarray(dtemp)
+        if len(selected_set) > 1 :
+            dmat = np.vstack([dmat,d])
+        else:
+            dmat = d
+        new_ind = np.argmax(np.amin(dmat,axis=0))
+        print(new_ind)
+        selected_indices.append(new_ind)
+        selected_set.append(NPS[new_ind,:])
+        if len(selected_set)%10 ==0:
+            print("\n\n found landmark %i out of %i"%(len(selected_set),nsamples))
+            print("size of the space is :" ,np.amax(dmat)," and size of the Voronoi cell is: ",np.amax(np.amin(dmat,axis=0)))
+            test_time.append(time.time())
+            print("CPU clock time to find the past 10 landmarks:", test_time[-1]-test_time[-2])
     print(("Total execution time of MaxMin: ", time.time() - prtime_start))
-    return selected_set, selected_indices
+    return selected_set,selected_indices
 
 
 def compute(var_importance,
@@ -85,13 +97,10 @@ def compute(var_importance,
             endpoint=True,
         )
         print(("On each dimension, we sample: ", grids_dim))
-        NPS1 = itertools.product(grids_dim, repeat=num_variables)
-        #NPS1=[np.array(i) for i in NPS1 if check_sample(i,var_LB,var_UB)]
-        NPS1 = [np.array(i) for i in NPS1]
-        NPS1 = np.asarray(NPS1)
+        NPS1 = np.stack(np.meshgrid(*itertools.repeat(grids_dim,num_variables)),-1).reshape(-1,num_variables)
         print(("In total, there are ", len(NPS1), "samples in the space\n"))
 
-        norm_diverse_set, sel_ind = min_max([], num_samples, NPS1,
+        norm_diverse_set, sel_ind = maxmin( num_samples, NPS1,
                                             var_importance)
         print(norm_diverse_set)
         coords = NPS1[sel_ind]
