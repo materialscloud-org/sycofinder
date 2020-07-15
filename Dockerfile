@@ -3,7 +3,7 @@
 # See http://phusion.github.io/baseimage-docker/ for info in phusion
 # See https://hub.docker.com/r/phusion/passenger-customizable
 # for the latest releases
-FROM phusion/passenger-customizable:1.0.1
+FROM phusion/passenger-customizable:1.0.11
 
 MAINTAINER Leopold Talirz <leopold.talirz@gmail.com>
 
