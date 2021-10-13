@@ -1,7 +1,6 @@
 #! /usr/bin/env python
-from __future__ import division, print_function
 from builtins import zip, range  # pylint: disable=redefined-builtin
-from deap import base, creator
+from deap import base, creator  # pylint: disable=no-member
 import numpy as np
 import random
 import scipy.stats as ss
@@ -131,7 +130,7 @@ def main(input_data, var_names, mutation_shrink_factor=1.0):
         last column needs to be the fitness column
     :param var_names:  names of variables
         checks that last name is "fitness" (or similar)
-    :param mutation_shrink_factor: multiplicator for width of Gaussian to determin mutation range - 
+    :param mutation_shrink_factor: multiplicator for width of Gaussian to determin mutation range -
         1.0 translates into 20% of the full width of the data along the given dimension
     """
     # pylint: disable=too-many-locals

@@ -3,7 +3,7 @@
 # See http://phusion.github.io/baseimage-docker/ for info in phusion
 # See https://hub.docker.com/r/phusion/passenger-customizable
 # for the latest releases
-FROM phusion/passenger-customizable:1.0.11
+FROM phusion/passenger-customizable:2.0.0
 
 MAINTAINER Leopold Talirz <leopold.talirz@gmail.com>
 
@@ -29,13 +29,12 @@ ADD ./.apache/apache-site.conf /etc/apache2/sites-available/app.conf
 RUN a2enmod wsgi && \
     a2dissite 000-default && a2ensite app
 
-# Activate apache at startup
-RUN mkdir /etc/service/apache
-RUN mkdir /var/run/apache2
-ADD ./.apache/apache_run.sh /etc/service/apache/run
-
 # Run this as root to replace the version of pip
 RUN pip3 install --upgrade pip setuptools wheel
+
+# Activate apache at startup
+RUN mkdir /etc/service/apache
+ADD ./.apache/apache_run.sh /etc/service/apache/run
 
 ## pymc build requirements: gfortran, liblapack-dev, numpy
 #RUN apt-get -y install python-pip gfortran liblapack-dev
@@ -51,7 +50,7 @@ COPY ./.apache/app.wsgi app.wsgi
 
 COPY sycofinder/ ./sycofinder
 COPY README.md setup.py setup.json  ./
-RUN pip3 install --user -e . --no-warn-script-location
+RUN pip install --user --no-warn-script-location -e .
 
 # go back to root user for startup
 USER root

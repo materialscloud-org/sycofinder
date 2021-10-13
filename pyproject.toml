@@ -1,0 +1,12 @@
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.messages_control]
+disable = [
+    "wrong-import-order",
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "invalid-name",
+    "R0801",
+    "broad-except",
+]

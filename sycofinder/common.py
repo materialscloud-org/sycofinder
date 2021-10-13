@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=wrong-import-position,import-error,multiple-imports
-from __future__ import print_function
 from builtins import range  # pylint: disable=redefined-builtin
-from future import standard_library
-standard_library.install_aliases()
 import urllib.request, urllib.parse, urllib.error
-import dash_html_components as html
-import dash_table as dt
+from dash import html
+from dash import dash_table as dt
 import base64
 import io
 import pandas as pd
@@ -104,7 +101,7 @@ def parse_data(content, name, date):
     msg = "Found {} experiments, with fitness from {} to {}.".format(
         nrows, fitness.min(), fitness.max())
 
-    return df.to_json(date_format='iso', orient='split'), html.P(msg)
+    return df.to_json(date_format='iso', orient='split'), html.P(msg)  # pylint: disable=no-member
 
 
 # styles

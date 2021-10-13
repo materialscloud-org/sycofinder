@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, absolute_import
 from builtins import range  # pylint: disable=redefined-builtin
 
 import collections
 
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 
 import pandas as pd
 import numpy as np
-#from . import uniform
-from . import maxmin
-from . import app
+from . import maxmin, app, common
 
 # variables
 variables = collections.OrderedDict([
@@ -33,7 +29,7 @@ NVARS_DEFAULT = len(variables)
 
 # Fill up to NVARS_MAX (needed to define callbacks)
 # Note: In the current implementation, anything beyond 6 takes too much time
-NVARS_MAX = 20 
+NVARS_MAX = 20
 for i in range(len(variables), NVARS_MAX):
     k = 'variable_{}'.format(i + 1)
     variables[k] = dict(label=k, range=[0, 1], weight=1)
@@ -45,13 +41,12 @@ weight_range = [-1, 1]
 ngrid = 5
 
 
-# pylint: disable=redefined-builtin
-def get_controls(id, desc, range, default_weight=0.0):
+def get_controls(id, desc, range, default_weight=0.0):  # pylint: disable=redefined-builtin,redefined-outer-name
     """Get controls for one variable.
 
     This includes
      * the description
-     * range 
+     * range
      * weight
     """
     label = dcc.Input(id=id + "_label",
@@ -174,11 +169,11 @@ for k, v in list(controls_dict.items()):
 
 
 # Callbacks to hide unselected variables
-for i in range(NVARS_MAX):
+for j in range(NVARS_MAX):
 
-    @app.callback(dash.dependencies.Output(var_ids[i] + "_tr", 'style'),
+    @app.callback(dash.dependencies.Output(var_ids[j] + "_tr", 'style'),
                   [dash.dependencies.Input('inp_nvars', 'value')])
-    def toggle_visibility(nvars, i=i):
+    def toggle_visibility(nvars, i=j):
         """Callback for setting variable visibility"""
         style = {}
 
@@ -240,9 +235,7 @@ def on_compute(n_clicks, *args):
     # add column for filling in experiments
     df['Fitness'] = ""
 
-    from .common import generate_table
-
-    table = generate_table(df, download_link=True)
+    table = common.generate_table(df, download_link=True)
     # Note: this would have to be created beforehand
     #table = dt.DataTable(
     #    rows=df.to_dict('records'),

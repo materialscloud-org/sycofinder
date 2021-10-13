@@ -1,4 +1,4 @@
-import dash_html_components as html
+from dash import html
 from . import app
 
 about = """
@@ -23,6 +23,7 @@ but may be useful in other applications of robotic synthesis.
 """
 
 changelog = [
+    ["v0.2.1", "update plot.ly dash dependencies"],
     [
         "v0.2.0",
         "switch to 'tournament' selection, add mutation range slider & validation"
@@ -40,38 +41,32 @@ layout = [
             html.H2("About"),
             html.Img(src="assets/images/logo.png", className="sycologo"),
             html.Img(src="assets/images/schema.png", className="sycoschema"),
-            html.Div(
-                about_html + [
-                    html.P(
-                        html.A(
-                            html.B("Watch the tutorial on Youtube"),
-                            href='https://youtu.be/i8i4HmEEw4Y',
-                            target='_blank')),
-                ],
-                className="info-container"),
+            html.Div(about_html + [
+                html.P(
+                    html.A(html.B("Watch the tutorial on Youtube"),
+                           href='https://youtu.be/i8i4HmEEw4Y',
+                           target='_blank')),
+            ],
+                     className="info-container"),
             html.H2("Steps"),
-            html.Div(
-                html.Ol([
-                    html.Li(html.A('Compute diverse set', href='maxdiv/')),
-                    html.Li(
-                        html.A(
-                            'Genetic Algorithm: compute next generation',
-                            href='ga/')),
-                    html.Li(
-                        html.A(
-                            'Determine importance of variables', href='ml/')),
-                ]),
-                className="sycolinks"),
+            html.Div(html.Ol([
+                html.Li(html.A('Compute diverse set', href='maxdiv/')),
+                html.Li(
+                    html.A('Genetic Algorithm: compute next generation',
+                           href='ga/')),
+                html.Li(html.A('Determine importance of variables',
+                               href='ml/')),
+            ]),
+                     className="sycolinks"),
             html.H2("Changelog"),
             html.Ul([
                 html.Li([html.B(k + " "), html.Span(v)]) for k, v in changelog
             ], ),
             html.P([
                 "Find the code ",
-                html.A(
-                    "on github",
-                    href="https://github.com/ltalirz/sycofinder",
-                    target='_blank'), "."
+                html.A("on github",
+                       href="https://github.com/ltalirz/sycofinder",
+                       target='_blank'), "."
             ]),
         ],
         id="container",

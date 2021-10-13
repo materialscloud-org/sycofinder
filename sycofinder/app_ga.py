@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-from __future__ import absolute_import
 
 from dash.dependencies import Input, Output, State
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 from . import app
 
 import pandas as pd
@@ -15,21 +12,21 @@ from .common import HIDE, SHOW, generate_table, upload_hint, parse_data
 layout = html.Div(
     [
         upload_hint,
-        dcc.Upload(
-            id='ga_upload',
-            children=html.Div(['Drag and Drop or ',
-                               html.A('Select Files')]),
-            style={
-                'width': '100%',
-                'height': '60px',
-                'lineHeight': '60px',
-                'borderWidth': '1px',
-                'borderStyle': 'dashed',
-                'borderRadius': '5px',
-                'textAlign': 'center',
-                'margin': '10px'
-            },
-            multiple=False),
+        dcc.Upload(id='ga_upload',
+                   children=html.Div(
+                       ['Drag and Drop or ',
+                        html.A('Select Files')]),
+                   style={
+                       'width': '100%',
+                       'height': '60px',
+                       'lineHeight': '60px',
+                       'borderWidth': '1px',
+                       'borderStyle': 'dashed',
+                       'borderRadius': '5px',
+                       'textAlign': 'center',
+                       'margin': '10px'
+                   },
+                   multiple=False),
         html.Div(id='ga_parsed_info'),
         html.Div(id='ga_parsed_data', style=HIDE),
         html.Div(id='ga_parsed_data_table'),
@@ -64,17 +61,13 @@ layout = html.Div(
 )
 
 
-@app.callback(
-    Output('ga_mutation_slider_label', 'children'),
-    [Input('ga_mutation_slider', 'value')])
+@app.callback(Output('ga_mutation_slider_label', 'children'),
+              [Input('ga_mutation_slider', 'value')])
 def slider_output(value):
     """Callback for updating slider value"""
     return "{:5.2f}".format(10**value)
 
 
-# Using multiple outputs as provided here:
-# https://github.com/plotly/dash/pull/436
-# TODO: Once this is released in the core, remove version pinning in setup.json
 @app.callback([
     Output('ga_parsed_data', 'children'),
     Output('ga_parsed_info', 'children')
@@ -87,8 +80,8 @@ def parse_data_ga(content, name, date):
     return parse_data(content, name, date)
 
 
-@app.callback(
-    Output('div_compute', 'style'), [Input('ga_parsed_data', 'children')])
+@app.callback(Output('div_compute', 'style'),
+              [Input('ga_parsed_data', 'children')])
 def show_button(json):
     if json is None:
         return HIDE
@@ -116,10 +109,9 @@ def on_compute(n_clicks, json, mutation_slider):
         return ""
     df = pd.read_json(json, orient='split')
 
-    new_pop, variables = ga.main(
-        input_data=df.values,
-        var_names=list(df),
-        mutation_shrink_factor=10**mutation_slider)
+    new_pop, variables = ga.main(input_data=df.values,
+                                 var_names=list(df),
+                                 mutation_shrink_factor=10**mutation_slider)
     df_new = pd.DataFrame(new_pop, columns=variables)
     df_new['Fitness'] = ""
 
