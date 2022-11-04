@@ -149,7 +149,7 @@ def main(input_data, var_names, mutation_shrink_factor=1.0):
     varSTD = [mutation_shrink_factor * (m - n) / 5.0 for m, n in zip(UB, LB)]
     # Note: we always compute only 1 generation (no GA in silico yet)
     migration_rate, mutation_rate = 0.1, 0.2
-    tournament_size = 4
+    tournament_size = 4 if len(pop) > 4 else len(pop)-1
     new_pop = []
     for _i in range(len(pop)):
         if random.random() < migration_rate:  # migration
