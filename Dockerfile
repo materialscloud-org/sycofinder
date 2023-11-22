@@ -30,7 +30,7 @@ RUN a2enmod wsgi && \
     a2dissite 000-default && a2ensite app
 
 # Run this as root to replace the version of pip
-RUN pip3 install --upgrade pip setuptools wheel
+RUN pip3 install --upgrade pip setuptools==58 wheel
 
 # Activate apache at startup
 RUN mkdir /etc/service/apache
