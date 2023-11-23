@@ -24,7 +24,8 @@
         "dccp~=1.0.0",
         "scikit-learn~=0.0",
         "toolz~=0.10.0",
-        "dask-distance~=0.2.0"
+        "dask-distance~=0.2.0",
+        "Werkzeug~=2.0.0"
     ],
     "extras_require": {
         "pre-commit": [
